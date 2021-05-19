@@ -3,6 +3,7 @@ create TABLE IF NOT EXISTS worklog
      id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
      equipment_id BIGINT UNSIGNED NOT NULL DEFAULT '' COMMENT '장비 아이디',
      partner_id BIGNINT UNSIGNED NOT NULL DEFAULT '' COMMENT '거래처 아이디',
+     operator_id BIGINT UNSIGNED NOT NULL DEFAULT '' COMMENT '기사 아이디',
      is_performed TINYINT(1) NOT NULL DEFAULT 0 COMMENT '실제 근무 여부',
      is_payment_collected TINYINT(1) NOT NULL DEFAULT 0 COMMENT '수금 여부',
      city VARCHAR(15) NOT NULL DEFAULT '' COMMENT '시/도',

@@ -41,7 +41,7 @@ public class HeavyEquipment extends BaseEntity<HeavyEquipmentDto> {
 
   @Override
   public HeavyEquipmentDto toDto() {
-    return null;
+    return new HeavyEquipmentDto(equipmentType, equipmentWeight, equipmentUnit, price.toDto());
   }
 
   @Builder
@@ -57,4 +57,5 @@ public class HeavyEquipment extends BaseEntity<HeavyEquipmentDto> {
   public Money calculateTotal(long hours){
     return new Money(hours * price.getPricePerUnit(), price.getUnit());
   }
+
 }

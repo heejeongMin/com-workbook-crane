@@ -1,5 +1,7 @@
 package com.workbook.crane.worklogContext.domain.model;
 
+import com.workbook.crane.common.BaseEntity;
+import com.workbook.crane.worklogContext.application.Dto.PriceDto;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
-public class Price {
+public class Price extends BaseEntity<PriceDto> {
 
   @Column(name = "price_per_unit")
   private long pricePerUnit;
@@ -21,5 +23,10 @@ public class Price {
 
   public static Price of(long pricePerUnit, MoneyUnit unit){
     return new Price(pricePerUnit, unit);
+  }
+
+  @Override
+  public PriceDto toDto() {
+    return new PriceDto(pricePerUnit, unit);
   }
 }

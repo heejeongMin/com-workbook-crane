@@ -1,5 +1,7 @@
 package com.workbook.crane.worklogContext.domain.model;
 
+import com.workbook.crane.common.BaseEntity;
+import com.workbook.crane.worklogContext.application.Dto.WorkPeriodDto;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -12,9 +14,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Embeddable
-public class WorkPeriod {
+public class WorkPeriod extends BaseEntity<WorkPeriodDto> {
 
   @Column(name = "start_date")
   private LocalDateTime startDate;
@@ -22,16 +24,24 @@ public class WorkPeriod {
   @Column(name = "end_date")
   private LocalDateTime endDate;
 
-  @Transient
-  private WorkTimeUnit workTimeUnit;
+//  @Transient
+//  private WorkTimeUnit workTimeUnit;
+//
+//  @Transient
+//  private long workhours;
 
-  @Transient
-  private long workhours;
+//  public static WorkPeriod of(LocalDateTime startDate, LocalDateTime endDate){
 
-  public static WorkPeriod of(LocalDateTime startDate,
-      LocalDateTime endDate, WorkTimeUnit workTimeUnit){
+//    return new WorkPeriod(startDate, endDate,WorkTimeUnit.calculateWorkTimeUnit(startDate, endDate),
+//        Duration.between(startDate, endDate).toMinutes());
+//  }
 
-    return new WorkPeriod(startDate, endDate, workTimeUnit,
-        Duration.between(startDate, endDate).toMinutes());
+  @Override
+  public WorkPeriodDto toDto() {
+    return null;
+  }
+
+  public long getWorkhours() {
+    return Duration.between(startDate, endDate).toMinutes();
   }
 }
