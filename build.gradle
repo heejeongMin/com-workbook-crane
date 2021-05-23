@@ -1,7 +1,17 @@
+buildscript {
+	ext {
+		queryDslVersion = "4.4.0"
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.4.5'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+}
+
+repositories {
+	mavenCentral()
 }
 
 group = 'com.workbook.crane'
@@ -14,17 +24,33 @@ configurations {
 	}
 }
 
-repositories {
-	mavenCentral()
-}
+apply plugin : "io.spring.dependency-management"
 
 dependencies {
+	/* database & orm */
 	implementation 'com.h2database:h2'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compile("com.querydsl:querydsl-core")
+	compile("com.querydsl:querydsl-jpa")
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+	
+	/* */
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	/* rest api */
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+	/* swagger + bean validation */
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'io.springfox:springfox-swagger2:3.0.0'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'io.springfox:springfox-bean-validators:3.0.0'
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -33,4 +59,17 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+def generated='src/main/generated'
+sourceSets {
+	main.java.srcDirs += [ generated ]
+}
+
+tasks.withType(JavaCompile) {
+	options.annotationProcessorGeneratedSourcesDirectory = file(generated)
+}
+
+clean.doLast {
+	file(generated).deleteDir()
 }

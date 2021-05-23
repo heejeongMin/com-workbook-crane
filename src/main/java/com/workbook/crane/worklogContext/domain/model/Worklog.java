@@ -3,6 +3,7 @@ package com.workbook.crane.worklogContext.domain.model;
 import com.workbook.crane.common.BaseEntity;
 import com.workbook.crane.worklogContext.application.Dto.WorkLocationDto;
 import com.workbook.crane.worklogContext.application.Dto.WorklogDto;
+import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -53,33 +54,56 @@ public class Worklog extends BaseEntity<WorklogDto> {
   @Column(name = "is_payment_collected")
   private boolean isPaymentCollected;
 
+  @Column(name = "deleted_at")
+  private LocalDateTime deletedAt;
+
   @Override
   public WorklogDto toDto() {
-    return new WorklogDto().builder()
-        .heavyEquipmentDto(heavyEquipment.toDto())
-        .workLocationDto(new WorkLocationDto(workLocation.getCity(),
-            workLocation.getGu(), workLocation.getDong()))
-        .startDate(workPeriod.getStartDate())
-        .endDate(workPeriod.getEndDate())
-        .isPerformed(isPerformed)
-        .isPaymentCollected(isPaymentCollected)
-        .build();
+    WorklogDto worklogDto = new WorklogDto().builder()
+                                .id(id)
+                                .heavyEquipmentDto(heavyEquipment.toDto())
+                                .workLocationDto(new WorkLocationDto(workLocation.getCity(),
+                                    workLocation.getGu(), workLocation.getDong()))
+                                .startDate(workPeriod.getStartDate())
+                                .endDate(workPeriod.getEndDate())
+                                .isPerformed(isPerformed)
+                                .isPaymentCollected(isPaymentCollected)
+                                .deletedAt(deletedAt)
+                                .build();
+
+    worklogDto.setCalculatedTotal(this.calculateTotal());
+
+    return worklogDto;
   }
 
   @Builder
   public Worklog (Long id, HeavyEquipment heavyEquipment,
       WorkLocation workLocation, WorkPeriod workPeriod,
-      boolean isPerformed, boolean isPaymentCollected) {
+      boolean isPerformed, boolean isPaymentCollected, LocalDateTime deletedAt) {
     this.id = id;
     this.heavyEquipment = heavyEquipment;
     this.workLocation = workLocation;
     this.workPeriod = workPeriod;
     this.isPerformed = isPerformed;
     this.isPaymentCollected = isPaymentCollected;
+    this.deletedAt = deletedAt;
   }
 
   public Money calculateTotal(){
     return heavyEquipment.calculateTotal(workPeriod.getWorkhours());
   }
 
+  public Worklog markWorklogIFPerformed(boolean isPerformed) {
+    this.isPerformed = isPerformed;
+    return this;
+  }
+
+  public Worklog markWorklogIFPaymentCollected(boolean isPaymentCollected) {
+    this.isPaymentCollected = isPaymentCollected;
+    return this;
+  }
+
+  public void markWorklogAsDeleted(){
+    this.deletedAt = LocalDateTime.now();
+  }
 }

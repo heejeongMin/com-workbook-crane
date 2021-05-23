@@ -68,8 +68,8 @@ class WorklogControllerTest {
         Worklog.builder()
             .heavyEquipment(heavyEquipmentList.get(0))
             .workLocation(WorkLocation.of("서울시", "도봉구", "창4동"))
-            .workPeriod(WorkPeriod.of(LocalDateTime.now(), LocalDateTime.now().plus(4, ChronoUnit.HOURS),
-                WorkTimeUnit.오전))
+            .workPeriod(new WorkPeriod(LocalDateTime.now(),
+                LocalDateTime.now().plus(4, ChronoUnit.HOURS)))
             .build());
 
 

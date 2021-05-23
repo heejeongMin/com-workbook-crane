@@ -2,13 +2,13 @@ package com.workbook.crane.worklogContext.presenation.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
-import com.sun.istack.NotNull;
+
 import com.workbook.crane.common.BaseRequest;
 import com.workbook.crane.worklogContext.application.Dto.HeavyEquipmentDto;
-import com.workbook.crane.worklogContext.application.Dto.PriceDto;
 import com.workbook.crane.worklogContext.application.Dto.WorkLocationDto;
 import com.workbook.crane.worklogContext.application.Dto.WorklogDto;
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +34,6 @@ public class WorklogCreateReq extends BaseRequest<WorklogDto> {
   private String gu;
   @NotNull
   private String dong;
-//  @NotNull
 //  private Partner partner;
 
   @Override

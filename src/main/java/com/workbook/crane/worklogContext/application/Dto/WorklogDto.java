@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WorklogDto extends BaseDto<Worklog> {
 
+  private Long id;
   private HeavyEquipmentDto heavyEquipmentDto;
   private WorkLocationDto workLocationDto;
   private LocalDateTime startDate;
@@ -20,18 +21,20 @@ public class WorklogDto extends BaseDto<Worklog> {
   private boolean isPerformed;
   private boolean isPaymentCollected;
   private Money total;
+  private LocalDateTime deletedAt;
 
   @Builder
-  public WorklogDto(
-      HeavyEquipmentDto heavyEquipmentDto, WorkLocationDto workLocationDto,
+  public WorklogDto(Long id, HeavyEquipmentDto heavyEquipmentDto, WorkLocationDto workLocationDto,
       LocalDateTime startDate, LocalDateTime endDate, boolean isPerformed,
-      boolean isPaymentCollected) {
+      boolean isPaymentCollected, LocalDateTime deletedAt) {
+    this.id = id;
     this.heavyEquipmentDto = heavyEquipmentDto;
     this.workLocationDto = workLocationDto;
     this.startDate = startDate;
     this.endDate = endDate;
     this.isPerformed = isPerformed;
     this.isPaymentCollected = isPaymentCollected;
+    this.deletedAt = deletedAt;
   }
 
   @Override
@@ -42,6 +45,7 @@ public class WorklogDto extends BaseDto<Worklog> {
         .workPeriod(new WorkPeriod(startDate, endDate))
         .isPerformed(isPerformed)
         .isPaymentCollected(isPaymentCollected)
+        .deletedAt(deletedAt)
         .build();
   }
 
