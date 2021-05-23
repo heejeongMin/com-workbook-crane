@@ -19,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Getter
 @NoArgsConstructor
 @Table(name = "worklog")
@@ -36,7 +37,7 @@ public class Worklog extends BaseEntity<WorklogDto> {
 
 //  @ManyToOne(targetEntity = Partner.class, fetch = FetchType.LAZY)
 //  @JoinColumn(name = "partner_id")
-//  private Parnter partner;
+//  private Partner partner;
 
 //  @ManyToOne(targetEntity = Operator.class, fetch = FetchType.LAZY)
 //  @JoinColumn(name = "operator_id")

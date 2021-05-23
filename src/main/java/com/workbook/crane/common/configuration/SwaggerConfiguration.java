@@ -32,7 +32,7 @@ public class SwaggerConfiguration {
   private ApiInfo apiInfo() {
     return new ApiInfo(
         "Project Doorumi",
-        "Self-Eloyeed Engineers Workbook",
+        "Self-Employed Engineers Workbook",
         "API v1",
         "Terms of Service",
         new Contact("Heejeong Min & Hyeonhee Yoo", "", "hj.min1031@gmail.com / y40414@naver.com"),

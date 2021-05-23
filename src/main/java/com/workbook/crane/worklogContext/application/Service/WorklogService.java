@@ -5,17 +5,11 @@ import com.workbook.crane.worklogContext.domain.model.Worklog;
 import com.workbook.crane.worklogContext.domain.repository.WorklogQueryRepository;
 import com.workbook.crane.worklogContext.domain.repository.WorklogRepository;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.querydsl.QSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +31,7 @@ public class WorklogService {
     return (worklog.isEmpty()) ? new WorklogDto() : worklog.get().toDto();//todo biz exception?
   }
 
+  @Transactional(readOnly = true)
   public List<WorklogDto> searchWorklogAll(
       LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
     return
