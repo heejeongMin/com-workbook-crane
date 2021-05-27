@@ -1,8 +1,13 @@
-package com.workbook.crane.user.domain;
+package com.workbook.crane.user.domain.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+/**
+ * 토큰 요청에 따른 응답 담는 객체
+ */
+@Getter
+@NoArgsConstructor
 public class OAuthToken {
 	private String access_token;
 	private String token_type;
