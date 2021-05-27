@@ -1,8 +1,8 @@
 package com.workbook.crane.user.presenation.request;
 
 import com.workbook.crane.common.BaseEntity;
+import com.workbook.crane.user.application.dto.UserDto;
 import com.workbook.crane.user.domain.entity.WorkType;
-import com.workbook.crane.user.presenation.dto.UserDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
