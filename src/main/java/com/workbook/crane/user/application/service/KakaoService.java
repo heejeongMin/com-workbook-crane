@@ -1,5 +1,10 @@
 package com.workbook.crane.user.application.service;
 
+import com.workbook.crane.user.application.dto.UserDto;
+import com.workbook.crane.user.domain.entity.KakaoProfile;
+import com.workbook.crane.user.domain.entity.OAuthToken;
+import com.workbook.crane.user.domain.entity.User;
+import com.workbook.crane.user.domain.repository.UserRepository;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -17,12 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workbook.crane.user.domain.KakaoProfile;
-import com.workbook.crane.user.domain.OAuthToken;
-import com.workbook.crane.user.domain.User;
-import com.workbook.crane.user.domain.UserRepository;
 import com.workbook.crane.user.domain.entity.WorkType;
-import com.workbook.crane.user.presenation.dto.UserDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
