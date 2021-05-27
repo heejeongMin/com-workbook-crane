@@ -1,6 +1,7 @@
-package com.workbook.crane.user.presenation;
+package com.workbook.crane.user.application.service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,45 +10,34 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workbook.crane.user.application.UserService;
 import com.workbook.crane.user.domain.KakaoProfile;
 import com.workbook.crane.user.domain.OAuthToken;
+import com.workbook.crane.user.domain.User;
+import com.workbook.crane.user.domain.UserRepository;
+import com.workbook.crane.user.domain.entity.WorkType;
 import com.workbook.crane.user.presenation.dto.UserDto;
-import com.workbook.crane.user.presenation.response.UserResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-@Controller
+@Slf4j
+@Service
 @RequiredArgsConstructor
-//@RequestMapping("/user")
-public class UserController {
-	
-	public final UserService userService;
+public class KakaoService {
 	
 	@Value("${kakao.client-id}")
 	private String CLIENT_ID;
 	
-	@ResponseBody
-	@GetMapping(value="/user/{id}")
-	public ResponseEntity<UserResponse> searchUser(@PathVariable Long id) {
-		UserDto userDto = userService.searchUser(id);
-		return ResponseEntity.ok(new UserResponse(userDto));
-	}
-	
-	@ResponseBody
-	@GetMapping(value="/oauth")
+	//private final UserService userService;
+	private final UserRepository userRepository;
+
 	public void kakaoConnect(HttpServletResponse httpServletResponse) throws IOException {
 		StringBuffer url = new StringBuffer();
         url.append("https://kauth.kakao.com/oauth/authorize?");
@@ -58,9 +48,7 @@ public class UserController {
         httpServletResponse.sendRedirect(url.toString());
 	}
 	
-	@GetMapping("/oauth/callback")
-	//public @ResponseBody String kakaoCallbak(String code) {
-	public @ResponseBody ResponseEntity<UserResponse> kakaoCallbak(String code) {
+	public UserDto kakaoCallback(String code) {
 		// -----------------------------토큰 받기----------------------------
 		// Post방식으로 key=value 데이터를 요청(카카오쪽으로) 
 		RestTemplate rt = new RestTemplate();
@@ -95,11 +83,8 @@ public class UserController {
 		try {
 			oauthToken = objectMapper.readValue(response.getBody(), OAuthToken.class);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		System.out.println(oauthToken.getAccess_token());
 		
 		
 		// -----------------------------토큰을 통한 사용자 정보 조회(POST)-----------------------------
@@ -122,8 +107,6 @@ public class UserController {
 				String.class							// 응답받을 타입 
 		);
 		
-		System.out.println(response2.getBody());
-		
 		
 		// -----------------------------토큰을 통한 사용자 정보 보기-----------------------------
 		// 응답받은 JSON 데이터를 Object에 담음.
@@ -132,7 +115,6 @@ public class UserController {
 		try {
 			kakaoProfile = objectMapper2.readValue(response2.getBody(), KakaoProfile.class);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -140,54 +122,29 @@ public class UserController {
 		System.out.println("카카오 이메일 : " + kakaoProfile.getKakao_account().getEmail());
 		System.out.println("두루미 유저네임 : " + kakaoProfile.getKakao_account().getEmail() + "_" + kakaoProfile.getId());
 
-		
-		// -----------------------------User객체에 사용자 정보 담고 DB에 저장-----------------------------
+
+		// -----------------------------User객체에 사용자 정보 담기-----------------------------
 		UserDto userDto = new UserDto().builder()
-				.name(kakaoProfile.getProperties().getNickname() +"_"+ kakaoProfile.getId())
+				.oauthId(kakaoProfile.getId())
+				.name(kakaoProfile.getProperties().getNickname())
 				.birthdate("")
 				.phoneNumber("")
 				.address("")
 				.nationality("")
-				.workType("employed")
+				.workType(WorkType.EMPLOYED)
 				.build();
 		
-		//return response2.getBody();
-		return ResponseEntity.ok(new UserResponse(userService.saveUser(userDto)));
+		
+		// -----------------------------DB에 저장된 값이 있으면 로그인, 없으면 회원가입-----------------------------
+		Long checkOauthId = userDto.getOauthId();
+		//UserDto searchUser = userService.searchUserById(checkOauthId);
+		Optional<User> searchUser = userRepository.findByOauthId(checkOauthId);
+		
+		if (searchUser.isEmpty()) {		// 회원가입 
+			//userService.createUser(userDto);
+			userRepository.save(userDto.toEntity());
+		}
+		
+		return userDto;
 	}
-	
-	@GetMapping(value = "/greeting")
-	public String greeting(@RequestParam(value = "name", required = false, defaultValue = "파라미터 입력") String name, Model model) {
-        model.addAttribute("name", name);
-        return "index";
-    }
-	
-	//@PostMapping    // POST 요청 방식의 API
-    //public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) { // @RequestBody : 클라이언트가 전송하는 Http 요청의 Body내용을 Java Object로 변환시켜주는 역할
-
-        // 회원이 등록되어 있는지 체크
-        /*UserDto userDto = userService.searchUser(userRequest.toEntity().getId());
-        if(userDto != null) {  // 등록되어 있다면
-            return ResponseEntity.ok(new UserResponse(userService.searchUser(userRequest.toEntity().getId())));
-        }
-        // 등록되어 있지 않다면(db에 저장)
-        // 응답 헤더의 상태 코드 본문을 직접 다루기 위해 사용
-        return ResponseEntity.ok(   // 200 ok 상태코드
-                new UserResponse(userService.createUser(userRequest.toEntity()))
-        );*/
-
-    //}
-	
-	
-	/*@GetMapping(value = "/")
-	public ResponseEntity<UserResponse> Userontroller(@ModelAttribute UserRequest req) {
-		return ResponseEntity.ok(new UserResponse(userService.userService(
-				new UserDto().builder()
-						.name(req.getName())
-						.birthdate(req.getBirthdate())
-						.phoneNumber(req.getPhoneNumber())
-						.address(req.getAddress())
-						.nationality(req.getNationality())
-						.workType(req.getWorkType())
-						.build())));
-	}*/
 }
