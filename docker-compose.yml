@@ -1,0 +1,21 @@
+version: '2'
+services:
+  database:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "crane"
+    ports:
+        - 3306:3306
+    volumes:
+        - "./docker/init/mysql/:/docker-entrypoint-initdb.d"
+  crane-server:
+    container_name: crane-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: crane
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
