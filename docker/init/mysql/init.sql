@@ -1,4 +1,25 @@
-CREATE TABLE IF NOT EXISTS worklog(
+CREATE TABLE IF NOT EXISTS example_table
+(
+     example_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
+     example_name VARCHAR(10)  NOT NULL DEFAULT '' COMMENT 'example_name'
+);
+
+CREATE TABLE IF NOT EXISTS users
+(
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
+	name VARCHAR(20) NOT NULL DEFAULT '' COMMENT '이름',
+  birthdate VARCHAR(50) NOT NULL DEFAULT '' COMMENT '생년월일',
+	phone_number VARCHAR(50) NOT NULL DEFAULT '' COMMENT '전화번호',
+	address VARCHAR(100) NOT NULL DEFAULT '' COMMENT '주소',
+	nationality VARCHAR(50) NOT NULL DEFAULT '' COMMENT '국적',
+	work_type VARCHAR(50) NOT NULL DEFAULT '' COMMENT '고용형태',
+	deleted_at datetime NOT NULL COMMENT '삭제 여부',
+	created_at datetime NOT NULL COMMENT '기록 생성 일자 및 시간',
+  modified_at datetime NOT NULL COMMENT '기록 수정 일자 및 시간'
+);
+
+CREATE TABLE IF NOT EXISTS worklog
+(
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
   equipment_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '장비 아이디',
   partner_id BIGINT UNSIGNED NOT NULL default 0  COMMENT '거래처 아이디',
