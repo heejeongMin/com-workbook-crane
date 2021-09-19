@@ -1,0 +1,28 @@
+version: '3'
+services:
+  crane-mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "crane"
+      MYSQL_PASSWORD: "password"
+      MYSQL_DATABASE: "crane"
+    ports:
+        - "127.0.0.1:3307:3306"
+    volumes:
+        - "./docker/init/mysql/:/docker-entrypoint-initdb.d"
+    container_name: crane-mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+#  crane-app:
+#    container_name: crane-server
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    image: crane
+#    working_dir: /crane-app
+#    ports:
+#      - 8080:8080
+#    depends_on:
+#      crane-mysql:
+#        condition: service_healthy
