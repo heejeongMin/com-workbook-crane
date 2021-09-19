@@ -1,11 +1,11 @@
-package com.workbook.crane.worklog.presenation.controller;
+package com.workbook.crane.worklog.presentation.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import com.workbook.crane.worklog.application.Service.WorklogService;
-import com.workbook.crane.worklog.presenation.request.WorklogCreateReq;
-import com.workbook.crane.worklog.presenation.response.WorklogCreateRes;
-import com.workbook.crane.worklog.presenation.response.WorklogRes;
+import com.workbook.crane.worklog.presentation.request.WorklogCreateReq;
+import com.workbook.crane.worklog.presentation.response.WorklogCreateRes;
+import com.workbook.crane.worklog.presentation.response.WorklogRes;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Arrays;

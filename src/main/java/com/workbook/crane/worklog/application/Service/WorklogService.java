@@ -2,7 +2,6 @@ package com.workbook.crane.worklog.application.Service;
 
 import com.workbook.crane.worklog.application.Dto.WorklogDto;
 import com.workbook.crane.worklog.domain.model.Worklog;
-import com.workbook.crane.worklog.domain.repository.WorklogQueryRepository;
 import com.workbook.crane.worklog.domain.repository.WorklogRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class WorklogService {
 
   private final WorklogRepository worklogRepository;
-  private final WorklogQueryRepository worklogQueryRepository;
 
   public WorklogDto createWorklog(WorklogDto worklogDto) {
     Worklog workLog = worklogRepository.save(worklogDto.toEntity());
@@ -35,8 +33,8 @@ public class WorklogService {
   public List<WorklogDto> searchWorklogAll(
       LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
     return
-        worklogQueryRepository
-            .findWorklogAll(startDate, endDate, PageRequest.of(page, size))
+        worklogRepository
+            .findAllWorklog(startDate, endDate, PageRequest.of(page, size))
             .stream()
             .map(Worklog::toDto)
             .collect(Collectors.toList());

@@ -1,4 +1,4 @@
-package com.workbook.crane.worklog.presenation.response;
+package com.workbook.crane.worklog.presentation.response;
 
 import com.workbook.crane.common.BaseResponse;
 import com.workbook.crane.worklog.application.Dto.WorklogDto;

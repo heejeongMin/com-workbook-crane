@@ -1,4 +1,4 @@
-package com.workbook.crane.worklog.presenation.controller;
+package com.workbook.crane.worklog.presentation.controller;
 
 import com.workbook.crane.worklog.application.Service.HeavyEquipmentService;
 import lombok.RequiredArgsConstructor;

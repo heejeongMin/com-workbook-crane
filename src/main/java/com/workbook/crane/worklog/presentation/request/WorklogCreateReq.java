@@ -1,4 +1,4 @@
-package com.workbook.crane.worklog.presenation.request;
+package com.workbook.crane.worklog.presentation.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;

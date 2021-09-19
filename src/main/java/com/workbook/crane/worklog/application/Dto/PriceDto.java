@@ -4,13 +4,22 @@ import com.workbook.crane.common.BaseDto;
 import com.workbook.crane.worklog.domain.model.MoneyUnit;
 import com.workbook.crane.worklog.domain.model.Price;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public class PriceDto extends BaseDto<Price> {
-  private final double pricePerUnit;
-  private final MoneyUnit unit;
+  private double pricePerUnit;
+  private MoneyUnit unit;
+
+  public PriceDto(){
+
+  }
+
+  public PriceDto(double pricePerUnit, MoneyUnit unit) {
+    this.pricePerUnit = pricePerUnit;
+    this.unit = unit;
+  }
 
   @Override
   public Price toEntity() {
