@@ -1,9 +1,10 @@
 package com.workbook.crane.user.application.service;
 
 import com.workbook.crane.user.application.dto.UserDto;
-import com.workbook.crane.user.domain.entity.KakaoProfile;
-import com.workbook.crane.user.domain.entity.OAuthToken;
-import com.workbook.crane.user.domain.entity.User;
+import com.workbook.crane.user.domain.model.KakaoProfile;
+import com.workbook.crane.user.domain.model.OAuthToken;
+import com.workbook.crane.user.domain.model.User;
+import com.workbook.crane.user.domain.model.WorkType;
 import com.workbook.crane.user.domain.repository.UserRepository;
 import java.io.IOException;
 import java.util.Optional;
@@ -22,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workbook.crane.user.domain.entity.WorkType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -130,7 +130,6 @@ public class KakaoService {
 				.birthdate("")
 				.phoneNumber("")
 				.address("")
-				.nationality("")
 				.workType(WorkType.EMPLOYED)
 				.build();
 		

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workbook.crane.user.application.dto.UserDto;
-import com.workbook.crane.user.domain.entity.User;
+import com.workbook.crane.user.domain.model.User;
 import com.workbook.crane.user.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -32,12 +32,12 @@ public class UserService {
 	public UserDto updateUser(Long oauthId, UserDto userDto) {
 		Optional<User> updateUser = userRepository.findByOauthId(oauthId);
 		
-		updateUser.ifPresent(selectUser -> {
-			selectUser.updateName(userDto.getName());
-			selectUser.updateBirthdate(userDto.getBirthdate());
-			selectUser.updatePhoneNumber(userDto.getPhoneNumber());
-			selectUser.updateAddress(userDto.getAddress());
-			selectUser.updateNationality(userDto.getNationality());
+		updateUser.ifPresent(user -> {
+			user.updateUser(
+					userDto.getName(), 
+					userDto.getBirthdate(),
+					userDto.getPhoneNumber(), 
+					userDto.getAddress());
 		});
 		
 		return (updateUser.isEmpty()) ? new UserDto() : updateUser.get().toDto();
