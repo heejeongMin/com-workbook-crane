@@ -1,4 +1,4 @@
-package com.workbook.crane.user.domain.entity;
+package com.workbook.crane.user.domain.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
