@@ -4,7 +4,9 @@ import com.workbook.crane.worklog.application.Dto.WorklogDto;
 import com.workbook.crane.worklog.domain.model.Worklog;
 import com.workbook.crane.worklog.domain.repository.WorklogRepository;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +32,21 @@ public class WorklogService {
   }
 
   @Transactional(readOnly = true)
-  public List<WorklogDto> searchWorklogAll(
+  public Map<String, Object> searchWorklogAll(
       LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
-    return
-        worklogRepository
-            .findAllWorklog(startDate, endDate, PageRequest.of(page, size))
-            .stream()
-            .map(Worklog::toDto)
-            .collect(Collectors.toList());
+
+    Map<String, Object> result = new HashMap<>();
+
+    List list =  worklogRepository
+        .findAllWorklog(startDate, endDate, PageRequest.of(page, size))
+        .stream()
+        .map(Worklog::toDto)
+        .collect(Collectors.toList());
+
+    result.put("totalItems", worklogRepository.count());
+    result.put("worklogDtoList", list);
+
+    return result;
   }
 
   @Transactional
