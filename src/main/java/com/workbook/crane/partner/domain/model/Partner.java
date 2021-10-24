@@ -15,7 +15,6 @@ import javax.persistence.Table;
 
 import com.workbook.crane.common.BaseEntity;
 import com.workbook.crane.partner.application.dto.PartnerDto;
-import com.workbook.crane.user.application.dto.UserDto;
 import com.workbook.crane.user.domain.model.User;
 
 import lombok.Builder;
@@ -36,7 +35,7 @@ public class Partner extends BaseEntity<PartnerDto> {
 	@Column(name = "partner_number")
 	private String partnerNumber;
 	
-	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "user_id")
 	private User user;
 	

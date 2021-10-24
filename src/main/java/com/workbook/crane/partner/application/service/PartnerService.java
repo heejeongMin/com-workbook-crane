@@ -49,16 +49,7 @@ public class PartnerService {
 	
 	@Transactional
 	public PartnerDto createPartner(PartnerDto partnerDto) {
-		PartnerDto createPartner = PartnerDto.builder()
-				.userDto(partnerDto.getUserDto())
-				.partnerNumber(partnerDto.getPartnerNumber())
-				.companyName(partnerDto.getCompanyName())
-				.ceoName(partnerDto.getCeoName())
-				.phoneNumber(partnerDto.getPhoneNumber())
-				.build();
-		Partner partner = partnerRepository.save(createPartner.toEntity());
-				
-		//Partner partner = partnerRepository.save(partnerDto.toEntity());
+		Partner partner = partnerRepository.save(partnerDto.toEntity());
 		return partner.toDto();
 	}
 	
@@ -77,9 +68,18 @@ public class PartnerService {
 		return (updatePartner.isEmpty()) ? new PartnerDto() : updatePartner.get().toDto();
 	}
 	
-	@Transactional
+	/*@Transactional
 	public PartnerDto deletePartner(Long id) {
 		Optional<Partner> partner = partnerRepository.findById(id);
+		if (!partner.isEmpty()) {
+			partner.get().deletePartner();
+		}
+		return (partner.isEmpty()) ? new PartnerDto() : partner.get().toDto();
+	}*/
+	
+	@Transactional
+	public PartnerDto deletePartner(String partnerNumber) {
+		Optional<Partner> partner = partnerRepository.findByPartnerNumber(partnerNumber);
 		if (!partner.isEmpty()) {
 			partner.get().deletePartner();
 		}

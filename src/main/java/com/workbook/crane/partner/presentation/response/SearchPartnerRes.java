@@ -9,6 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class PartnerRes {
+public class SearchPartnerRes {
 	private final List<PartnerDto> partnerDto;
 }
