@@ -30,11 +30,11 @@ CREATE TABLE IF NOT EXISTS worklog
   city VARCHAR(15) NOT NULL DEFAULT '' COMMENT '시/도',
   gu VARCHAR(10) NOT NULL DEFAULT '' COMMENT '구',
   dong VARCHAR(10) NOT NULL DEFAULT '' COMMENT '동',
-  start_date datetime NOT NULL COMMENT '시작 일자 및 시간',
-  end_date datetime NOT NULL COMMENT '종료 일자 및 시간',
-  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
-  modified_at datetime COMMENT '기록 수정 일자 및 시간',
-  deleted_at datetime COMMENT '기록 삭제 일자 및 시간'
+  start_date TIMESTAMP NOT NULL COMMENT '시작 일자 및 시간',
+  end_date TIMESTAMP NOT NULL COMMENT '종료 일자 및 시간',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
+  modified_at TIMESTAMP COMMENT '기록 수정 일자 및 시간',
+  deleted_at TIMESTAMP COMMENT '기록 삭제 일자 및 시간'
 );
 
 CREATE TABLE IF NOT EXISTS heavy_equipment
@@ -46,5 +46,15 @@ CREATE TABLE IF NOT EXISTS heavy_equipment
      price_per_unit double(19, 2) NOT NULL DEFAULT 0.0 COMMENT '금액',
      price_unit VARCHAR(3) NOT NULL DEFAULT 'WON' COMMENT '금액 단위'
 );
+
+insert into heavy_equipment
+(equipment_type, equipment_unit, equipment_weight, price_per_unit, price_unit)
+values
+('CRANE', 'TON', '25', 300000, 'WON');
+
+insert into heavy_equipment
+(equipment_type, equipment_unit, equipment_weight, price_per_unit, price_unit)
+values
+('CRANE', 'TON', '50', 700000, 'WON');
 
 

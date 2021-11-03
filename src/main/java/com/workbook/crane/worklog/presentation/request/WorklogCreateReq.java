@@ -27,7 +27,7 @@ public class WorklogCreateReq extends BaseRequest<WorklogDto> {
   @NotNull
   private LocalDateTime endDate;
   @NotNull
-  private HeavyEquipmentDto heavyEquipmentDto;
+  private Long equipmentId;
   @NotNull
   private String city;
   @NotNull
@@ -39,7 +39,7 @@ public class WorklogCreateReq extends BaseRequest<WorklogDto> {
   @Override
   public WorklogDto toDto(){
     return new WorklogDto().builder()
-        .heavyEquipmentDto(heavyEquipmentDto)
+        .equipmentId(equipmentId)
         .workLocationDto(new WorkLocationDto(city, gu, dong))
         .startDate(startDate)
         .endDate(endDate)

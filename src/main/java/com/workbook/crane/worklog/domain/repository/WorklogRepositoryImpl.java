@@ -27,7 +27,8 @@ public class WorklogRepositoryImpl
     QueryResults<Worklog> result =
         from(worklog)
             .where(worklog.workPeriod.startDate.goe(startDate)
-                .and(worklog.workPeriod.endDate.lt(endDate)))
+                .and(worklog.workPeriod.endDate.lt(endDate))
+                .and(worklog.deletedAt.isNull()))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetchResults();

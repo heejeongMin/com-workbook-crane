@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class WorklogDto extends BaseDto<Worklog> {
 
   private Long id;
-  private HeavyEquipmentDto heavyEquipmentDto;
+  private Long equipmentId;
   private WorkLocationDto workLocationDto;
   private LocalDateTime startDate;
   private LocalDateTime endDate;
@@ -24,11 +24,11 @@ public class WorklogDto extends BaseDto<Worklog> {
   private LocalDateTime deletedAt;
 
   @Builder
-  public WorklogDto(Long id, HeavyEquipmentDto heavyEquipmentDto, WorkLocationDto workLocationDto,
+  public WorklogDto(Long id, Long equipmentId, WorkLocationDto workLocationDto,
       LocalDateTime startDate, LocalDateTime endDate, boolean isPerformed,
       boolean isPaymentCollected, LocalDateTime deletedAt) {
     this.id = id;
-    this.heavyEquipmentDto = heavyEquipmentDto;
+    this.equipmentId = equipmentId;
     this.workLocationDto = workLocationDto;
     this.startDate = startDate;
     this.endDate = endDate;
@@ -40,7 +40,7 @@ public class WorklogDto extends BaseDto<Worklog> {
   @Override
   public Worklog toEntity() {
     return Worklog.builder()
-        .heavyEquipment(heavyEquipmentDto.toEntity())
+        .equipmentId(equipmentId)
         .workLocation(workLocationDto.toEntity())
         .workPeriod(new WorkPeriod(startDate, endDate))
         .isPerformed(isPerformed)

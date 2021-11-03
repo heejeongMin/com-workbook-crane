@@ -17,4 +17,11 @@ public class WorklogRes {
     res.totalItems = (Long) map.get("totalItems");
     return res;
   }
+
+  public static WorklogRes from(List<WorklogDto> worklogDtos) {
+    WorklogRes res = new WorklogRes();
+    res.worklogDtoList = worklogDtos;
+    res.totalItems = worklogDtos.size();
+    return res;
+  }
 }

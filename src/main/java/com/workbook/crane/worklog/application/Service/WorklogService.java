@@ -2,6 +2,7 @@ package com.workbook.crane.worklog.application.Service;
 
 import com.workbook.crane.worklog.application.Dto.WorklogDto;
 import com.workbook.crane.worklog.domain.model.Worklog;
+import com.workbook.crane.worklog.domain.repository.HeavyEquipmentRepository;
 import com.workbook.crane.worklog.domain.repository.WorklogRepository;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WorklogService {
 
   private final WorklogRepository worklogRepository;
+  private final HeavyEquipmentRepository heavyEquipmentRepository;
 
   public WorklogDto createWorklog(WorklogDto worklogDto) {
     Worklog workLog = worklogRepository.save(worklogDto.toEntity());

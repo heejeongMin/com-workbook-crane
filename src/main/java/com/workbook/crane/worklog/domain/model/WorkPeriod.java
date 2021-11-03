@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.repository.Temporal;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

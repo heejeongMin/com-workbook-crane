@@ -56,7 +56,8 @@ public class WorklogController {
   public ResponseEntity<EntityModel<WorklogCreateRes>> createWorklog(
       @RequestBody WorklogCreateReq worklogCreateReq){
 
-    WorklogCreateRes res = new WorklogCreateRes(worklogService.createWorklog(worklogCreateReq.toDto()));
+    WorklogCreateRes res = new WorklogCreateRes(
+        worklogService.createWorklog(worklogCreateReq.toDto()));
 
     URI createdURI = linkTo(WorklogController.class).slash(res.getWorklogDto().getId()).toUri();
     EntityModel<WorklogCreateRes> entityModel = EntityModel.of(
@@ -108,8 +109,8 @@ public class WorklogController {
 //        new WorklogRes(worklogService.updateWorklogIFPaymentCollected(ids, isPaymentCollected)));
 //  }
 
-//  @DeleteMapping(value = "/crane/v1/worklog")
-//  public ResponseEntity<WorklogRes> deleteWorklog(@RequestParam(value = "ids") List<Long> ids) {
-//    return ResponseEntity.ok(new WorklogRes(worklogService.deleteWorklog(ids)));
-//  }
+  @DeleteMapping(value = "/crane/v1/worklog")
+  public ResponseEntity<WorklogRes> deleteWorklog(@RequestParam(value = "ids") List<Long> ids) {
+    return ResponseEntity.ok(WorklogRes.from(worklogService.deleteWorklog(ids)));
+  }
 }

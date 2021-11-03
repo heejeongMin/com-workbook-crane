@@ -31,9 +31,8 @@ public class Worklog extends BaseEntity<WorklogDto> {
   @Column(name = "id")
   private Long id;
 
-  @ManyToOne(targetEntity = HeavyEquipment.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "equipment_id")
-  private HeavyEquipment heavyEquipment;
+  @Column(name = "equipment_id")
+  private Long equipmentId;
 
 //  @ManyToOne(targetEntity = Partner.class, fetch = FetchType.LAZY)
 //  @JoinColumn(name = "partner_id")
@@ -62,7 +61,7 @@ public class Worklog extends BaseEntity<WorklogDto> {
   public WorklogDto toDto() {
     WorklogDto worklogDto = new WorklogDto().builder()
                                 .id(id)
-                                .heavyEquipmentDto(heavyEquipment.toDto())
+                                .equipmentId(equipmentId)
                                 .workLocationDto(new WorkLocationDto(workLocation.getCity(),
                                     workLocation.getGu(), workLocation.getDong()))
                                 .startDate(workPeriod.getStartDate())
@@ -72,17 +71,17 @@ public class Worklog extends BaseEntity<WorklogDto> {
                                 .deletedAt(deletedAt)
                                 .build();
 
-    worklogDto.setCalculatedTotal(this.calculateTotal());
+//    worklogDto.setCalculatedTotal(this.calculateTotal());
 
     return worklogDto;
   }
 
   @Builder
-  public Worklog (Long id, HeavyEquipment heavyEquipment,
+  public Worklog (Long id, Long equipmentId,
       WorkLocation workLocation, WorkPeriod workPeriod,
       boolean isPerformed, boolean isPaymentCollected, LocalDateTime deletedAt) {
     this.id = id;
-    this.heavyEquipment = heavyEquipment;
+    this.equipmentId = equipmentId;
     this.workLocation = workLocation;
     this.workPeriod = workPeriod;
     this.isPerformed = isPerformed;
@@ -90,9 +89,9 @@ public class Worklog extends BaseEntity<WorklogDto> {
     this.deletedAt = deletedAt;
   }
 
-  public Money calculateTotal(){
-    return heavyEquipment.calculateTotal(workPeriod.getWorkhours());
-  }
+//  public Money calculateTotal(){
+//    return heavyEquipment.calculateTotal(workPeriod.getWorkhours());
+//  }
 
   public Worklog markWorklogIFPerformed(boolean isPerformed) {
     this.isPerformed = isPerformed;
