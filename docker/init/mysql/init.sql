@@ -6,17 +6,16 @@ CREATE TABLE IF NOT EXISTS example_table
 
 CREATE TABLE IF NOT EXISTS users
 (
-  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
-  oauth_id BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'kakao oauth id',
+  	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
+  	oauth_id BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'kakao oauth id',
 	name VARCHAR(20) NOT NULL DEFAULT '' COMMENT '이름',
-  birthdate VARCHAR(50) NOT NULL DEFAULT '' COMMENT '생년월일',
+  	birthdate VARCHAR(50) NOT NULL DEFAULT '' COMMENT '생년월일',
 	phone_number VARCHAR(50) NOT NULL DEFAULT '' COMMENT '전화번호',
 	address VARCHAR(100) NOT NULL DEFAULT '' COMMENT '주소',
-	nationality VARCHAR(50) NOT NULL DEFAULT '' COMMENT '국적',
 	work_type VARCHAR(50) NOT NULL DEFAULT '' COMMENT '고용형태',
-	deleted_at datetime COMMENT '삭제 여부',
 	created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
-  modified_at datetime COMMENT '기록 수정 일자 및 시간'
+    modified_at datetime COMMENT '기록 수정 일자 및 시간',
+	deleted_at datetime COMMENT '삭제 여부'
 );
 
 CREATE TABLE IF NOT EXISTS worklog
@@ -56,5 +55,18 @@ insert into heavy_equipment
 (equipment_type, equipment_unit, equipment_weight, price_per_unit, price_unit)
 values
 ('CRANE', 'TON', '50', 700000, 'WON');
+
+CREATE TABLE IF NOT EXISTS partner
+(
+	 id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
+     partner_number VARCHAR(50) NOT NULL DEFAULT '' COMMENT '거래처 번호',
+	 user_id BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '사용자 아이디',
+	 company_name VARCHAR(50) NOT NULL DEFAULT '' COMMENT '회사명',
+	 ceo_name VARCHAR(50) NOT NULL DEFAULT '' COMMENT '대표자명',
+	 phone_number VARCHAR(50) NOT NULL DEFAULT '' COMMENT '전화번호',
+	 created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
+     modified_at datetime COMMENT '기록 수정 일자 및 시간',
+     deleted_at datetime COMMENT '삭제 여부'
+);
 
 

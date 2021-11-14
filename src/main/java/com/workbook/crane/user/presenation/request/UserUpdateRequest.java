@@ -2,7 +2,7 @@ package com.workbook.crane.user.presenation.request;
 
 import com.workbook.crane.common.BaseEntity;
 import com.workbook.crane.user.application.dto.UserDto;
-import com.workbook.crane.user.domain.entity.WorkType;
+import com.workbook.crane.user.domain.model.WorkType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +19,6 @@ public class UserUpdateRequest extends BaseEntity<UserDto> {
 	private String birthdate;
 	private String phoneNumber;
 	private String address;
-	private String nationality;
 	private WorkType workType;
 	//private LocalDateTime deletedAt;
 	
@@ -30,7 +29,6 @@ public class UserUpdateRequest extends BaseEntity<UserDto> {
 				.birthdate(this.birthdate)
 				.phoneNumber(this.phoneNumber)
 				.address(this.address)
-				.nationality(this.nationality)
 				.build();
 	}
 }
