@@ -4,6 +4,7 @@ import com.workbook.crane.common.BaseEntity;
 import com.workbook.crane.worklog.application.Dto.WorkPeriodDto;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;

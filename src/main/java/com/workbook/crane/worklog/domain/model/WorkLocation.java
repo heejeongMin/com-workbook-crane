@@ -29,6 +29,10 @@ public class WorkLocation extends BaseEntity<WorkLocationDto> {
     return new WorkLocation(city, gu, dong);
   }
 
+  public String getLocationInText(){
+    return this.city + " " + this.getDong() + " " + this.getGu();
+  }
+
   @Override
   public WorkLocationDto toDto() {
     return null;

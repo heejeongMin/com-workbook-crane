@@ -9,8 +9,8 @@ services:
       MYSQL_DATABASE: "crane"
 #      MYSQL_TCP_PORT: 3307
     ports:
-      - "127.0.0.1:3307:3306"
-#      - "3306:3306"
+#      - "127.0.0.1:3307:3306"
+      - "3306:3306"
     command: mysqld --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
     volumes:
       - "./docker/init/mysql/:/docker-entrypoint-initdb.d"

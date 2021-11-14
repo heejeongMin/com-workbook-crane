@@ -29,8 +29,8 @@ public class WorklogRepositoryImpl
             .where(worklog.workPeriod.startDate.goe(startDate)
                 .and(worklog.workPeriod.endDate.lt(endDate))
                 .and(worklog.deletedAt.isNull()))
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
+//            .offset(pageable.getOffset())
+//            .limit(pageable.getPageSize())
             .fetchResults();
 
     return new PageImpl<>(result.getResults(), pageable, result.getTotal());

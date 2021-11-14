@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import com.workbook.crane.user.presenation.response.UserResponse;
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -40,6 +42,8 @@ public class UserController {
 
 	@GetMapping(value = "/crane/v1/user/{oauthId}")
 	public ResponseEntity<UserResponse> searchUser(@PathVariable(value = "oauthId") Long oauthId) {
+		log.info("test");
+
 		return ResponseEntity.ok(new UserResponse(userService.searchUser(oauthId)));
 	}
 	

@@ -58,4 +58,8 @@ public class HeavyEquipment extends BaseEntity<HeavyEquipmentDto> {
     return new Money(hours * price.getPricePerUnit(), price.getUnit());
   }
 
+  public String getEquipment(){
+    return equipmentWeight + "" + this.equipmentUnit;
+  }
+
 }
