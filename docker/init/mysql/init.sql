@@ -1,10 +1,10 @@
-CREATE TABLE IF NOT EXISTS example_table
+create TABLE IF NOT EXISTS example_table
 (
      example_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
      example_name VARCHAR(10)  NOT NULL DEFAULT '' COMMENT 'example_name'
 );
 
-CREATE TABLE IF NOT EXISTS users
+create TABLE IF NOT EXISTS users
 (
   	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
   	oauth_id BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'kakao oauth id',
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users
 	deleted_at datetime COMMENT '삭제 여부'
 );
 
-CREATE TABLE IF NOT EXISTS worklog
+create TABLE IF NOT EXISTS worklog
 (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
   equipment_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '장비 아이디',
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS worklog
   deleted_at TIMESTAMP COMMENT '기록 삭제 일자 및 시간'
 );
 
-CREATE TABLE IF NOT EXISTS heavy_equipment
+create TABLE IF NOT EXISTS heavy_equipment
 (
      id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
      equipment_type varchar(10) NOT NULL DEFAULT '' COMMENT '장비명',
@@ -56,17 +56,16 @@ insert into heavy_equipment
 values
 ('CRANE', 'TON', '50', 700000, 'WON');
 
-CREATE TABLE IF NOT EXISTS partner
+create TABLE IF NOT EXISTS partner
 (
 	 id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
-     partner_number VARCHAR(50) NOT NULL DEFAULT '' COMMENT '거래처 번호',
-	 user_id BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '사용자 아이디',
+   partner_number VARCHAR(50) NOT NULL DEFAULT '' COMMENT '거래처 번호',
 	 company_name VARCHAR(50) NOT NULL DEFAULT '' COMMENT '회사명',
 	 ceo_name VARCHAR(50) NOT NULL DEFAULT '' COMMENT '대표자명',
 	 phone_number VARCHAR(50) NOT NULL DEFAULT '' COMMENT '전화번호',
 	 created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
-     modified_at datetime COMMENT '기록 수정 일자 및 시간',
-     deleted_at datetime COMMENT '삭제 여부'
+   modified_at datetime COMMENT '기록 수정 일자 및 시간',
+   deleted_at datetime COMMENT '삭제 여부'
 );
 
 
