@@ -19,7 +19,7 @@ public interface PartnerRepository extends JpaRepository<Partner, Long>{
 	@Query("SELECT p FROM Partner p WHERE p.deletedAt IS NULL")
 	List<Partner> findAllActivePartner(Pageable pageable);
 
-	Partner findByCompanyName(String companyName);
+	Partner findByCompanyNameAndDeletedAtIsNull(String companyName);
 
 	Partner findByIdAndDeletedAtIsNull(Long partnerId);
 }

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crane-app
+  labels:
+    name: crane
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crane
+  template:
+    metadata:
+      labels:
+        app: crane
+    spec:
+      containers:
+        - name: crane
+          image: heejeong/crane
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+      serviceAccountName: dooroomi-admin

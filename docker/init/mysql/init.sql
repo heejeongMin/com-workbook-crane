@@ -63,6 +63,7 @@ create TABLE IF NOT EXISTS partner
 	 company_name VARCHAR(50) NOT NULL DEFAULT '' COMMENT '회사명',
 	 ceo_name VARCHAR(50) NOT NULL DEFAULT '' COMMENT '대표자명',
 	 phone_number VARCHAR(50) NOT NULL DEFAULT '' COMMENT '전화번호',
+	 created_by BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '생성자 아이디',
 	 created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
    modified_at datetime COMMENT '기록 수정 일자 및 시간',
    deleted_at datetime COMMENT '삭제 여부'

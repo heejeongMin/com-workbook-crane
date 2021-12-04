@@ -14,6 +14,7 @@ public class PartnerReq {
 	private String companyName;
 	private String ceoName;
 	private String phoneNumber;
+	private Long createdBy;
 
 	public PartnerDto toDto() {
 		PartnerDto partnerDto = new PartnerDto().builder()

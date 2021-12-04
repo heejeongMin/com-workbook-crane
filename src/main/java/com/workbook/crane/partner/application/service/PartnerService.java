@@ -36,7 +36,8 @@ public class PartnerService {
 
   @Transactional
   public PartnerDto createPartner(PartnerDto partnerDto) throws Exception {
-    if (null != partnerRepository.findByCompanyName(partnerDto.getCompanyName())) {
+    if (null !=
+        partnerRepository.findByCompanyNameAndDeletedAtIsNull(partnerDto.getCompanyName())) {
       throw new Exception("존재하는 사명입니다.");
     }
 
@@ -56,10 +57,7 @@ public class PartnerService {
       throw new Exception("존재하지 않는 거래처입니다.");
     }
 
-    partner.updatePartner(
-        partnerDto.getCompanyName(),
-        partnerDto.getCeoName(),
-        partnerDto.getPhoneNumber());
+    partner.updatePartner(partnerDto);
 
     return partner.toDto();
   }

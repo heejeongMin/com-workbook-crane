@@ -15,6 +15,7 @@ import com.workbook.crane.partner.application.dto.PartnerDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @NoArgsConstructor
@@ -39,17 +40,21 @@ public class Partner extends BaseEntity<PartnerDto> {
   @Column(name = "phone_number")
   private String phoneNumber;
 
+  @Column(name = "created_by")
+  private Long createdBy;
+
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
 
   @Builder
   public Partner(Long id, String partnerNumber, String companyName, String ceoName,
-      String phoneNumber, LocalDateTime deletedAt) {
+      String phoneNumber, Long createdBy, LocalDateTime deletedAt) {
     this.id = id;
     this.partnerNumber = partnerNumber;
     this.companyName = companyName;
     this.ceoName = ceoName;
     this.phoneNumber = phoneNumber;
+    this.createdBy = createdBy;
     this.deletedAt = deletedAt;
   }
 
@@ -59,13 +64,23 @@ public class Partner extends BaseEntity<PartnerDto> {
   	partner.companyName = dto.getCompanyName();
   	partner.ceoName = dto.getCeoName();
   	partner.phoneNumber = dto.getPhoneNumber();
+  	partner.createdBy = dto.getCreatedBy();
   	return partner;
 	}
 
-  public Partner updatePartner(String companyName, String ceoName, String phoneNumber) {
-    this.companyName = companyName;
-    this.ceoName = ceoName;
-    this.phoneNumber = phoneNumber;
+  public Partner updatePartner(PartnerDto dto) {
+    if(StringUtils.isNotEmpty(dto.getCompanyName()) && !dto.getCompanyName().equals(companyName)) {
+      this.companyName = dto.getCompanyName();
+    }
+    if(StringUtils.isNotEmpty(dto.getCeoName()) && !dto.getCeoName().equals(ceoName)) {
+      this.ceoName = dto.getCeoName();
+    }
+    if(StringUtils.isNotEmpty(dto.getPhoneNumber()) && !dto.getPhoneNumber().equals(ceoName)) {
+      this.phoneNumber = dto.getPhoneNumber();
+    }
+    if(dto.getCreatedBy() != null && !dto.getCreatedBy().equals(createdBy)) {
+      this.createdBy = dto.getCreatedBy();
+    }
     return this;
   }
 
@@ -77,6 +92,7 @@ public class Partner extends BaseEntity<PartnerDto> {
         .companyName(companyName)
         .ceoName(ceoName)
         .phoneNumber(phoneNumber)
+        .createdBy(createdBy)
         .deletedAt(deletedAt)
         .build();
 

@@ -20,6 +20,7 @@ public class PartnerDto extends BaseDto<Partner> {
   private String companyName;
   private String ceoName;
   private String phoneNumber;
+  private Long createdBy;
   private LocalDateTime deletedAt;
 
   public static PartnerDto from(PartnerReq req) {
@@ -27,6 +28,7 @@ public class PartnerDto extends BaseDto<Partner> {
     partnerDto.companyName = req.getCompanyName();
     partnerDto.ceoName = req.getCeoName();
     partnerDto.phoneNumber = req.getPhoneNumber();
+    partnerDto.createdBy = req.getCreatedBy();
     return partnerDto;
   }
 
@@ -36,17 +38,19 @@ public class PartnerDto extends BaseDto<Partner> {
     partnerDto.companyName = req.getCompanyName();
     partnerDto.ceoName = req.getCeoName();
     partnerDto.phoneNumber = req.getPhoneNumber();
+    partnerDto.createdBy = req.getCreatedBy();
     return partnerDto;
   }
 
   @Builder
   public PartnerDto(Long id, UserDto userDto, String partnerNumber, String companyName,
-      String ceoName, String phoneNumber, LocalDateTime deletedAt) {
+      String ceoName, String phoneNumber, Long createdBy, LocalDateTime deletedAt) {
     this.id = id;
     this.partnerNumber = partnerNumber;
     this.companyName = companyName;
     this.ceoName = ceoName;
     this.phoneNumber = phoneNumber;
+    this.createdBy = createdBy;
     this.deletedAt = deletedAt;
   }
 
