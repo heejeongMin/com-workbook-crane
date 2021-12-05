@@ -1,6 +1,6 @@
 FROM openjdk:11
 
-RUN mkdir /opt/app && apt-get update && apt-get -y install netcat && apt-get clean
+RUN mkdir /opt/app && apt clean && apt-get --allow-releaseinfo-change update && apt-get -y install netcat && apt-get clean
 
 COPY build/libs/com-workbook-crane-0.0.1-SNAPSHOT.jar /opt/app
 

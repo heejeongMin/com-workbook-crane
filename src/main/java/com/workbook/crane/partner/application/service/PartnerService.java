@@ -1,6 +1,8 @@
 package com.workbook.crane.partner.application.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,11 +23,18 @@ public class PartnerService {
   private final PartnerRepository partnerRepository;
 
   @Transactional(readOnly = true)
-  public List<PartnerDto> searchPartnerAll(int page, int size) {
-    return partnerRepository.findAllActivePartner(PageRequest.of(page, size))
+  public Map<String, Object> searchPartnerAll(int page, int size) {
+    Map<String, Object> result = new HashMap<>();
+
+    List list = partnerRepository.findAllActivePartner(PageRequest.of(page, size))
         .stream()
         .map(Partner::toDto)
         .collect(Collectors.toList());
+
+    result.put("totalItems", partnerRepository.count());
+    result.put("partnerDtoList", list);
+
+    return result;
   }
 
   @Transactional(readOnly = true)

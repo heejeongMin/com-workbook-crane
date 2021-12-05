@@ -3,6 +3,7 @@ package com.workbook.crane.partner.presentation.controller;
 import com.workbook.crane.partner.application.dto.PartnerDto;
 import java.util.Arrays;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,29 +32,30 @@ public class PartnerController {
 	public ResponseEntity<PartnerRes> searchAllPartner(
 		    @RequestParam(value =  "page", defaultValue = "1") int page,
 		    @RequestParam(value =  "size", defaultValue = "10") int size){
-		return ResponseEntity.ok(new PartnerRes(partnerService.searchPartnerAll(page, size)));
+		return ResponseEntity.ok(PartnerRes.from(partnerService.searchPartnerAll(page, size)));
 	}
 	
 	@GetMapping(value = "/crane/v1/partner/{partnerId}")
 	public ResponseEntity<PartnerRes> searchPartnerByPartnerNumber(
 			@PathVariable(value = "partnerId") Long partnerId) {
 		return ResponseEntity.ok(
-				new PartnerRes(Arrays.asList(partnerService.searchPartnerById(partnerId))));
+				PartnerRes.from(Arrays.asList(partnerService.searchPartnerById(partnerId))));
 	}
 	
 	@PostMapping(value = "/crane/v1/partner")
 	public ResponseEntity<PartnerRes> createPartner(
 			@RequestBody PartnerReq partnerReq) throws Exception {
-		return ResponseEntity.ok
-				(new PartnerRes(Arrays.asList(partnerService.createPartner(PartnerDto.from(partnerReq)))));
+		return new ResponseEntity(
+				PartnerRes.from(Arrays.asList(partnerService.createPartner(PartnerDto.from(partnerReq)))),
+				HttpStatus.CREATED);
 	}
-	
+
 	@PutMapping(value = "/crane/v1/partner/{partnerId}")
 	public ResponseEntity<PartnerRes> updatePartner(
 			@PathVariable(value = "partnerId") Long partnerId,
 			@RequestBody PartnerReq partnerReq) throws Exception {
 		return ResponseEntity.ok(
-				new PartnerRes(Arrays.asList(
+				PartnerRes.from(Arrays.asList(
 						partnerService.updatePartner(PartnerDto.of(partnerId, partnerReq)))));
 	}
 
@@ -61,7 +63,7 @@ public class PartnerController {
 	public ResponseEntity<PartnerRes> deletePartner(
 			@PathVariable(value = "partnerId") Long partnerId) throws Exception {
 		return ResponseEntity.ok(
-				new PartnerRes(Arrays.asList(partnerService.deletePartner(partnerId))));
+				PartnerRes.from(Arrays.asList(partnerService.deletePartner(partnerId))));
 	}
 	
 }

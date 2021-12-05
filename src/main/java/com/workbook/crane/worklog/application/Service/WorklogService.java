@@ -1,5 +1,7 @@
 package com.workbook.crane.worklog.application.Service;
 
+import com.workbook.crane.partner.domain.model.Partner;
+import com.workbook.crane.partner.domain.repository.PartnerRepository;
 import com.workbook.crane.worklog.application.Dto.WorklogDto;
 import com.workbook.crane.worklog.application.Dto.WorklogExcelDto;
 import com.workbook.crane.worklog.domain.model.HeavyEquipment;
@@ -61,6 +63,8 @@ public class WorklogService {
 
   private final HeavyEquipmentRepository heavyEquipmentRepository;
 
+  private final PartnerRepository partnerRepository;
+
   @Value("${worklog.email.id}")
   private String emailId;
 
@@ -69,9 +73,20 @@ public class WorklogService {
 
   private final String sender = "두루미";
 
-  public WorklogDto createWorklog(WorklogDto worklogDto) {
-    Worklog workLog = worklogRepository.save(worklogDto.toEntity());
-    return workLog.toDto();
+  public WorklogDto createWorklog(WorklogDto worklogDto) throws Exception {
+
+    Partner partner =
+        partnerRepository.findByIdAndDeletedAtIsNull(worklogDto.getPartnerDto().getId());
+    if(partner == null) {
+      throw new Exception("Partner not found");
+    }
+
+    return worklogRepository.save(Worklog.create(worklogDto, partner)).toDto();
+  }
+
+  @Transactional(readOnly = true)
+  public WorklogDto getWorklogById(Long id){
+    return worklogRepository.getOne(id).toDto();
   }
 
   @Transactional(readOnly = true)

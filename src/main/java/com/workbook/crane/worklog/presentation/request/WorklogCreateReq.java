@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 import com.workbook.crane.common.BaseRequest;
+import com.workbook.crane.partner.application.dto.PartnerDto;
+import com.workbook.crane.partner.presentation.request.PartnerReq;
 import com.workbook.crane.worklog.application.Dto.WorkLocationDto;
-import com.workbook.crane.worklog.application.Dto.HeavyEquipmentDto;
 import com.workbook.crane.worklog.application.Dto.WorklogDto;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
@@ -34,7 +35,8 @@ public class WorklogCreateReq extends BaseRequest<WorklogDto> {
   private String gu;
   @NotNull
   private String dong;
-//  private Partner partner;
+  @NotNull
+  private Long partnerId;
 
   @Override
   public WorklogDto toDto(){
@@ -43,6 +45,7 @@ public class WorklogCreateReq extends BaseRequest<WorklogDto> {
         .workLocationDto(new WorkLocationDto(city, gu, dong))
         .startDate(startDate)
         .endDate(endDate)
+        .partnerDto(PartnerDto.of(partnerId, new PartnerReq()))
         .build();
   }
 

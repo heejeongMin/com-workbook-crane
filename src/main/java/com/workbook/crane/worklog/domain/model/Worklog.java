@@ -1,10 +1,10 @@
 package com.workbook.crane.worklog.domain.model;
 
 import com.workbook.crane.common.BaseEntity;
+import com.workbook.crane.partner.domain.model.Partner;
 import com.workbook.crane.worklog.application.Dto.WorkLocationDto;
 import com.workbook.crane.worklog.application.Dto.WorklogDto;
 import java.time.LocalDateTime;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -34,19 +34,15 @@ public class Worklog extends BaseEntity<WorklogDto> {
   @Column(name = "equipment_id")
   private Long equipmentId;
 
-//  @ManyToOne(targetEntity = Partner.class, fetch = FetchType.LAZY)
-//  @JoinColumn(name = "partner_id")
-//  private Partner partner;
-
-//  @ManyToOne(targetEntity = Operator.class, fetch = FetchType.LAZY)
-//  @JoinColumn(name = "operator_id")
-//  private Operator operator;
-
   @Embedded
   private WorkLocation workLocation;
 
   @Embedded
   private WorkPeriod workPeriod;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "partner_id")
+  private Partner partner;
 
   @Column(name = "is_performed")
   private boolean isPerformed;
@@ -57,6 +53,18 @@ public class Worklog extends BaseEntity<WorklogDto> {
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
 
+  public static Worklog create(WorklogDto worklogDto, Partner partner){
+    return Worklog.builder()
+        .equipmentId(worklogDto.getEquipmentId())
+        .workLocation(worklogDto.getWorkLocationDto().toEntity())
+        .workPeriod(new WorkPeriod(worklogDto.getStartDate(), worklogDto.getEndDate()))
+        .partner(partner)
+        .isPerformed(worklogDto.isPerformed())
+        .isPaymentCollected(worklogDto.isPaymentCollected())
+        .deletedAt(worklogDto.getDeletedAt())
+        .build();
+  }
+
   @Override
   public WorklogDto toDto() {
     WorklogDto worklogDto = new WorklogDto().builder()
@@ -66,6 +74,7 @@ public class Worklog extends BaseEntity<WorklogDto> {
                                     workLocation.getGu(), workLocation.getDong()))
                                 .startDate(workPeriod.getStartDate())
                                 .endDate(workPeriod.getEndDate())
+                                .partnerDto(partner.toDto())
                                 .isPerformed(isPerformed)
                                 .isPaymentCollected(isPaymentCollected)
                                 .deletedAt(deletedAt)
@@ -78,12 +87,13 @@ public class Worklog extends BaseEntity<WorklogDto> {
 
   @Builder
   public Worklog (Long id, Long equipmentId,
-      WorkLocation workLocation, WorkPeriod workPeriod,
+      WorkLocation workLocation, WorkPeriod workPeriod, Partner partner,
       boolean isPerformed, boolean isPaymentCollected, LocalDateTime deletedAt) {
     this.id = id;
     this.equipmentId = equipmentId;
     this.workLocation = workLocation;
     this.workPeriod = workPeriod;
+    this.partner = partner;
     this.isPerformed = isPerformed;
     this.isPaymentCollected = isPaymentCollected;
     this.deletedAt = deletedAt;

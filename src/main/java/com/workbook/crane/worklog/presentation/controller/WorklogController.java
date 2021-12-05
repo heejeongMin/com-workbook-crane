@@ -74,7 +74,7 @@ public class WorklogController {
 
   @PostMapping(value = "/crane/v1/worklog")
   public ResponseEntity<EntityModel<WorklogCreateRes>> createWorklog(
-      @RequestBody WorklogCreateReq worklogCreateReq) {
+      @RequestBody WorklogCreateReq worklogCreateReq) throws Exception{
     return new ResponseEntity(
         new WorklogCreateRes(worklogService.createWorklog(worklogCreateReq.toDto())),
         HttpStatus.CREATED);
@@ -92,6 +92,13 @@ public class WorklogController {
       @RequestParam(value = "size", defaultValue = "8") int size) {
     return ResponseEntity.ok(
         WorklogRes.from(worklogService.searchWorklogAll(startDate, endDate, page, size)));
+  }
+
+  @GetMapping(value = "/crane/v1/worklog/{worklogId}")
+  public ResponseEntity<WorklogRes> getWorklogById(
+      @PathVariable(value = "worklogId") Long worklogId) {
+    return ResponseEntity.ok(
+        WorklogRes.from(Arrays.asList(worklogService.getWorklogById(worklogId))));
   }
 
   @DeleteMapping(value = "/crane/v1/worklog")

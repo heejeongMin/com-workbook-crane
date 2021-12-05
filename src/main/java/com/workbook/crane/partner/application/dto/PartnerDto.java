@@ -28,7 +28,7 @@ public class PartnerDto extends BaseDto<Partner> {
     partnerDto.companyName = req.getCompanyName();
     partnerDto.ceoName = req.getCeoName();
     partnerDto.phoneNumber = req.getPhoneNumber();
-    partnerDto.createdBy = req.getCreatedBy();
+    partnerDto.createdBy = null == req.getCreatedBy()? 1 : req.getCreatedBy();
     return partnerDto;
   }
 

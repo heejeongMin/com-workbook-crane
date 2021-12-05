@@ -1,6 +1,7 @@
 package com.workbook.crane.worklog.application.Dto;
 
 import com.workbook.crane.common.BaseDto;
+import com.workbook.crane.partner.application.dto.PartnerDto;
 import com.workbook.crane.worklog.domain.model.Money;
 import com.workbook.crane.worklog.domain.model.WorkPeriod;
 import com.workbook.crane.worklog.domain.model.Worklog;
@@ -18,6 +19,7 @@ public class WorklogDto extends BaseDto<Worklog> {
   private WorkLocationDto workLocationDto;
   private LocalDateTime startDate;
   private LocalDateTime endDate;
+  private PartnerDto partnerDto;
   private boolean isPerformed;
   private boolean isPaymentCollected;
   private Money total;
@@ -25,13 +27,14 @@ public class WorklogDto extends BaseDto<Worklog> {
 
   @Builder
   public WorklogDto(Long id, Long equipmentId, WorkLocationDto workLocationDto,
-      LocalDateTime startDate, LocalDateTime endDate, boolean isPerformed,
+      LocalDateTime startDate, LocalDateTime endDate, PartnerDto partnerDto, boolean isPerformed,
       boolean isPaymentCollected, LocalDateTime deletedAt) {
     this.id = id;
     this.equipmentId = equipmentId;
     this.workLocationDto = workLocationDto;
     this.startDate = startDate;
     this.endDate = endDate;
+    this.partnerDto = partnerDto;
     this.isPerformed = isPerformed;
     this.isPaymentCollected = isPaymentCollected;
     this.deletedAt = deletedAt;
@@ -43,6 +46,7 @@ public class WorklogDto extends BaseDto<Worklog> {
         .equipmentId(equipmentId)
         .workLocation(workLocationDto.toEntity())
         .workPeriod(new WorkPeriod(startDate, endDate))
+        .partner(partnerDto.toEntity())
         .isPerformed(isPerformed)
         .isPaymentCollected(isPaymentCollected)
         .deletedAt(deletedAt)
