@@ -9,6 +9,7 @@ import com.workbook.crane.user.domain.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-	Optional<User> findByOauthId(Long oauthId);
-	//List<User> findByOauthId(List<Long> oauthId);
+
+  User findByEmailAndDeletedAtIsNull(String email);
+  Optional<User> findByUsername(String username);
 }

@@ -1,62 +1,47 @@
 package com.workbook.crane.worklog.application.Dto;
 
-import com.workbook.crane.common.BaseDto;
-import com.workbook.crane.partner.application.dto.PartnerDto;
-import com.workbook.crane.worklog.domain.model.Money;
-import com.workbook.crane.worklog.domain.model.WorkPeriod;
-import com.workbook.crane.worklog.domain.model.Worklog;
+import com.workbook.crane.partner.application.model.info.PartnerSearchInfo;
+import com.workbook.crane.partner.domain.model.Partner;
+import com.workbook.crane.worklog.application.model.info.WorklogInfo;
+import com.workbook.crane.worklog.application.model.info.WorklogInfo.PartnerInfo;
 import java.time.LocalDateTime;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-public class WorklogDto extends BaseDto<Worklog> {
+public class WorklogDto {
 
   private Long id;
-  private Long equipmentId;
-  private WorkLocationDto workLocationDto;
-  private LocalDateTime startDate;
-  private LocalDateTime endDate;
+  private HeavyEquipmentDto heavyEquipmentDto;
+  private String location;
+  private WorkPeriodDto workPeriodDto;
   private PartnerDto partnerDto;
-  private boolean isPerformed;
-  private boolean isPaymentCollected;
-  private Money total;
+  private LocalDateTime createdAt;
   private LocalDateTime deletedAt;
 
-  @Builder
-  public WorklogDto(Long id, Long equipmentId, WorkLocationDto workLocationDto,
-      LocalDateTime startDate, LocalDateTime endDate, PartnerDto partnerDto, boolean isPerformed,
-      boolean isPaymentCollected, LocalDateTime deletedAt) {
-    this.id = id;
-    this.equipmentId = equipmentId;
-    this.workLocationDto = workLocationDto;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.partnerDto = partnerDto;
-    this.isPerformed = isPerformed;
-    this.isPaymentCollected = isPaymentCollected;
-    this.deletedAt = deletedAt;
+  public static WorklogDto from(WorklogInfo info) {
+    WorklogDto dto = new WorklogDto();
+    dto.id = info.getId();
+    dto.heavyEquipmentDto = HeavyEquipmentDto.from(info.getHeavyEquipmentInfo());
+    dto.location = info.getLocation();
+    dto.workPeriodDto = WorkPeriodDto.from(info.getWorkPeriodInfo());
+    dto.partnerDto = PartnerDto.from(info.getPartnerInfo());
+    dto.createdAt = info.getCreatedAt();
+    dto.deletedAt = info.getDeletedAt();
+    return dto;
   }
 
-  @Override
-  public Worklog toEntity() {
-    return Worklog.builder()
-        .equipmentId(equipmentId)
-        .workLocation(workLocationDto.toEntity())
-        .workPeriod(new WorkPeriod(startDate, endDate))
-        .partner(partnerDto.toEntity())
-        .isPerformed(isPerformed)
-        .isPaymentCollected(isPaymentCollected)
-        .deletedAt(deletedAt)
-        .build();
+  @Getter
+  private static class PartnerDto {
+    private Long id;
+    private String partnerNumber;
+    private String companyName;
+
+    public static PartnerDto from(PartnerInfo info){
+      PartnerDto dto = new PartnerDto();
+      dto.id = info.getId();
+      dto.partnerNumber = info.getPartnerNumber();
+      dto.companyName = info.getCompanyName();
+      return dto;
+    }
   }
-
-  public WorklogDto setCalculatedTotal(Money total) {
-    this.total = total;
-    return this;
-  }
-
-
 }

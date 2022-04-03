@@ -1,9 +1,11 @@
 package com.workbook.crane.user.domain.model;
 
+import com.workbook.crane.user.application.model.command.SignupCommand;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -12,84 +14,61 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.workbook.crane.common.BaseEntity;
-import com.workbook.crane.user.application.dto.UserDto;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
-public class User extends BaseEntity<UserDto> {
+public class User extends BaseEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
-	
-	@Column(name = "oauth_id")
-	private Long oauthId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
 
-	@Column(name = "name")
-	private String name;
+	@Column(name = "username")
+	private String username;
 
-	@Column(name = "birthdate")
-	private String birthdate;
+	@Column(name = "password")
+	private String password;
 
-	@Column(name = "phone_number")
-	private String phoneNumber;
+  @Column(name = "full_name")
+  private String fullname;
 
-	@Column(name = "address")
-	private String address;
+	@Column(name = "email")
+	private String email;
 
-	//@Column(name = "nationality")
-	//private String nationality;
+  @Enumerated(EnumType.ORDINAL)
+  @Column(name = "role", columnDefinition = "TINYINT")
+  private Role role;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "work_type")
-	private WorkType workType;
-	
-	@Column(name = "deleted_at")
-	private LocalDateTime deletedAt;
+  @CreatedDate
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
 
-	@Builder
-	public User(Long id, Long oauthId, String name, String birthdate, String phoneNumber, String address, WorkType workType, LocalDateTime deletedAt) {
-		this.id = id;
-		this.oauthId = oauthId;
-		this.name = name;
-		this.birthdate = birthdate;
-		this.phoneNumber = phoneNumber;
-		this.address = address;
-		this.workType = workType;
-		this.deletedAt = deletedAt;
-	}
+  @LastModifiedDate
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
 
-	public User updateUser(String name, String birthdate, String phoneNumber, String address) {
-		this.name = name;
-		this.birthdate = birthdate;
-		this.phoneNumber = phoneNumber;
-		this.address = address;
-		return this;
-	}
-	
-	@Override
-	public UserDto toDto() {
-		return UserDto.builder()
-				.id(this.id)
-				.oauthId(this.oauthId)
-				.name(this.name)
-				.birthdate(this.birthdate)
-				.phoneNumber(this.phoneNumber)
-				.address(this.address)
-				.workType(workType)
-				.deletedAt(this.deletedAt)
-				.build();
-	}
+  @Column(name = "deleted_at")
+  private LocalDateTime deletedAt;
 
-	public void deleteUser(){
-		this.deletedAt = LocalDateTime.now();
+	public static User create(SignupCommand command, PasswordEncoder passwordEncoder){
+		User user = new User();
+		user.username = command.getUsername();
+		user.password = passwordEncoder.encode(command.getPassword());
+		user.fullname = command.getFullname();
+		user.email = command.getEmail();
+    user.role = command.getRole();
+		return user;
 	}
 }

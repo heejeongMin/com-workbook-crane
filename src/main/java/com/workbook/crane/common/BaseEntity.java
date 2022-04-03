@@ -1,7 +1,9 @@
 package com.workbook.crane.common;
 
-public abstract class BaseEntity<T> {
+import javax.persistence.EntityListeners;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-  public abstract T toDto();
+@EntityListeners(AuditingEntityListener.class)
+public abstract class BaseEntity {
 
 }

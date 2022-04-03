@@ -1,9 +1,11 @@
 package com.workbook.crane.partner.domain.model;
 
+import com.workbook.crane.partner.application.model.command.PartnerCreateCommand;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,16 +14,19 @@ import javax.persistence.Table;
 import com.workbook.crane.common.BaseEntity;
 import com.workbook.crane.partner.application.dto.PartnerDto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @NoArgsConstructor
 @Table(name = "partner")
+@EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Partner extends BaseEntity<PartnerDto> {
+public class Partner {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,28 +48,24 @@ public class Partner extends BaseEntity<PartnerDto> {
   @Column(name = "created_by")
   private Long createdBy;
 
+  @CreatedDate
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
+
+  @LastModifiedDate
+  @Column(name = "modified_at")
+  private LocalDateTime modifiedAt;
+
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
 
-  @Builder
-  public Partner(Long id, String partnerNumber, String companyName, String ceoName,
-      String phoneNumber, Long createdBy, LocalDateTime deletedAt) {
-    this.id = id;
-    this.partnerNumber = partnerNumber;
-    this.companyName = companyName;
-    this.ceoName = ceoName;
-    this.phoneNumber = phoneNumber;
-    this.createdBy = createdBy;
-    this.deletedAt = deletedAt;
-  }
-
-  public static Partner create(PartnerDto dto) {
+  public static Partner create(PartnerCreateCommand command, Long createdBy, String partnerNumber) {
   	Partner partner = new Partner();
-  	partner.partnerNumber = dto.getPartnerNumber();
-  	partner.companyName = dto.getCompanyName();
-  	partner.ceoName = dto.getCeoName();
-  	partner.phoneNumber = dto.getPhoneNumber();
-  	partner.createdBy = dto.getCreatedBy();
+  	partner.partnerNumber = partnerNumber;
+  	partner.companyName = command.getCompanyName();
+  	partner.ceoName = command.getCeoName();
+  	partner.phoneNumber = command.getPhoneNumber();
+  	partner.createdBy = createdBy;
   	return partner;
 	}
 
@@ -84,29 +85,11 @@ public class Partner extends BaseEntity<PartnerDto> {
     return this;
   }
 
-  @Override
   public PartnerDto toDto() {
-    PartnerDto partnerDto = new PartnerDto().builder()
-        .id(id)
-        .partnerNumber(partnerNumber)
-        .companyName(companyName)
-        .ceoName(ceoName)
-        .phoneNumber(phoneNumber)
-        .createdBy(createdBy)
-        .deletedAt(deletedAt)
-        .build();
-
-    return partnerDto;
+    return null;
   }
 
   public void deletePartner() {
     this.deletedAt = LocalDateTime.now();
   }
-
-  public static String generatePartnerNumber(String partnerNumber) {
-    int number = Integer.parseInt(partnerNumber.substring(1));
-    String format = number < 10 ? "%03d" : number < 100 ? "%02d" : "%01d";
-    return String.format(format, number++);
-  }
-
 }

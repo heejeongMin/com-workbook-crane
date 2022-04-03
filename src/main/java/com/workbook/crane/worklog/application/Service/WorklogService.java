@@ -1,9 +1,15 @@
 package com.workbook.crane.worklog.application.Service;
 
+import com.workbook.crane.partner.application.service.PartnerService;
 import com.workbook.crane.partner.domain.model.Partner;
-import com.workbook.crane.partner.domain.repository.PartnerRepository;
-import com.workbook.crane.worklog.application.Dto.WorklogDto;
+import com.workbook.crane.user.application.service.AuthService;
+import com.workbook.crane.user.domain.model.User;
 import com.workbook.crane.worklog.application.Dto.WorklogExcelDto;
+import com.workbook.crane.worklog.application.model.command.WorklogCreateCommand;
+import com.workbook.crane.worklog.application.model.criteria.WorklogSearchCriteria;
+import com.workbook.crane.worklog.application.model.info.WorklogCreateInfo;
+import com.workbook.crane.worklog.application.model.info.WorklogInfo;
+import com.workbook.crane.worklog.application.model.info.WorklogSearchAllInfo;
 import com.workbook.crane.worklog.domain.model.HeavyEquipment;
 import com.workbook.crane.worklog.domain.model.Worklog;
 import com.workbook.crane.worklog.domain.repository.HeavyEquipmentRepository;
@@ -12,14 +18,11 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import javax.activation.CommandMap;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -50,7 +53,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,11 +62,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class WorklogService {
 
+  private final AuthService authService;
+  private final PartnerService partnerService;
+  private final HeavyEquipmentService heavyEquipmentService;
   private final WorklogRepository worklogRepository;
-
   private final HeavyEquipmentRepository heavyEquipmentRepository;
-
-  private final PartnerRepository partnerRepository;
 
   @Value("${worklog.email.id}")
   private String emailId;
@@ -73,48 +76,55 @@ public class WorklogService {
 
   private final String sender = "두루미";
 
-  public WorklogDto createWorklog(WorklogDto worklogDto) throws Exception {
+  @Transactional
+  public WorklogCreateInfo createWorklog(WorklogCreateCommand command) throws Exception {
+    User user = authService.getUserOrElseThrow(command.getUsername());
+    Partner partner = partnerService.getPartnerOrElseThrow(command.getPartnerId());
+    HeavyEquipment heavyEquipment =
+        heavyEquipmentService.getHeavyEquipmentOrElseThrow(command.getEquipmentId(), user);
 
-    Partner partner =
-        partnerRepository.findByIdAndDeletedAtIsNull(worklogDto.getPartnerDto().getId());
-    if(partner == null) {
-      throw new Exception("Partner not found");
+    Worklog worklog =
+        worklogRepository.save(Worklog.create(command, user, partner, heavyEquipment));
+
+    return WorklogCreateInfo.from(worklog);
+  }
+
+  @Transactional(readOnly = true)
+  public WorklogSearchAllInfo searchAllWorklog(WorklogSearchCriteria criteria)
+      throws Exception {
+    User user = authService.getUserOrElseThrow(criteria.getUsername());
+    Partner partner = null;
+
+    if (StringUtils.isNotEmpty(criteria.getPartnerName())) {
+      Optional<Partner> partnerOptional = partnerService.isExistingPartnerNameByUser(
+          criteria.getPartnerName(), user.getId());
+      if(partnerOptional.isEmpty()) {
+        return WorklogSearchAllInfo.getDefault();
+      }
+      partner = partnerOptional.get();
     }
 
-    return worklogRepository.save(Worklog.create(worklogDto, partner)).toDto();
+    Page<Worklog> pages = worklogRepository.findAllWorklogByCriteria(criteria, partner, user);
+    return WorklogSearchAllInfo.from(pages);
   }
 
   @Transactional(readOnly = true)
-  public WorklogDto getWorklogById(Long id){
-    return worklogRepository.getOne(id).toDto();
-  }
-
-  @Transactional(readOnly = true)
-  public Map<String, Object> searchWorklogAll(
-      LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
-
-    Map<String, Object> result = new HashMap<>();
-
-    List list = worklogRepository
-        .findAllWorklog(startDate, endDate, PageRequest.of(page, size))
-        .stream()
-        .map(Worklog::toDto)
-        .collect(Collectors.toList());
-
-    result.put("totalItems", worklogRepository.count());
-    result.put("worklogDtoList", list);
-
-    return result;
+  public WorklogInfo getWorklogById(Long id, String username) throws Exception {
+    User user = authService.getUserOrElseThrow(username);
+    return WorklogInfo.from(worklogRepository.findByIdAndUser(id, user));
   }
 
   @Transactional
-  public List<WorklogDto> deleteWorklog(List<Long> ids) {
-    return
-        worklogRepository.findAllById(ids).stream().map(
-            worklog -> {
-              worklog.markWorklogAsDeleted();
-              return worklog.toDto();
-            }).collect(Collectors.toList());
+  public WorklogInfo deleteWorklog(Long id, String username) throws Exception {
+    User user = authService.getUserOrElseThrow(username);
+    Worklog worklog = worklogRepository.findByIdAndUser(id, user);
+    if(worklog == null){
+      throw new Exception("Worklog not found");
+    }
+
+    worklog.markWorklogAsDeleted();
+
+    return WorklogInfo.from(worklog);
   }
 
   public void sendWorklogEmail(WorklogExcelDto dto) throws Exception {
@@ -127,8 +137,9 @@ public class WorklogService {
   }
 
   private void extractWorklog (WorklogExcelDto dto, String filePath) throws Exception{
+    User user = authService.getUserOrElseThrow(dto.getUsername());
     List<Worklog> worklogList =
-        worklogRepository.findWorklogInGivenPeriod(dto.getFrom(), dto.getTo());
+        worklogRepository.findWorklogInGivenPeriod(dto.getFrom(), dto.getTo(), user);
 
     try {
       XSSFRow xssfRow;
@@ -204,19 +215,19 @@ public class WorklogService {
 
         xssfCell = xssfRow.createCell((short) 1);
         xssfCell.setCellStyle(tableCellStyle);
-        xssfCell.setCellValue(worklog.getWorkPeriod().getStartDate()
+        xssfCell.setCellValue(worklog.getWorkPeriod().getStartedAt()
             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH시mm분")));
 
         xssfCell = xssfRow.createCell((short) 2);
         xssfCell.setCellStyle(tableCellStyle);
-        xssfCell.setCellValue(worklog.getWorkPeriod().getEndDate()
+        xssfCell.setCellValue(worklog.getWorkPeriod().getFinishedAt()
             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH시mm분")));
 
         xssfCell = xssfRow.createCell((short) 3);
         xssfCell.setCellStyle(tableCellStyle);
-        xssfCell.setCellValue(worklog.getWorkLocation().getLocationInText());
+        xssfCell.setCellValue(worklog.getLocation());
 
-        HeavyEquipment heavyEquipment = heavyEquipmentRepository.getOne(worklog.getEquipmentId());
+        HeavyEquipment heavyEquipment = heavyEquipmentRepository.getOne(worklog.getEquipment().getId());
 
         xssfCell = xssfRow.createCell((short) 4);
         xssfCell.setCellStyle(tableCellStyle);
@@ -224,7 +235,7 @@ public class WorklogService {
 
         xssfCell = xssfRow.createCell((short) 5);
         xssfCell.setCellStyle(tableCellStyle);
-        xssfCell.setCellValue("임시거래처");
+        xssfCell.setCellValue(worklog.getPartner().getCompanyName());
       }
 
       File file = new File(filePath);
@@ -249,7 +260,7 @@ public class WorklogService {
     String[] references = {email};
     //첨부파일
     String[] attachedFiles = {};
-    if(StringUtils.isNotEmpty(filePath)) {
+    if (StringUtils.isNotEmpty(filePath)) {
       attachedFiles = new String[]{filePath};
     }
 
@@ -278,11 +289,15 @@ public class WorklogService {
 
       //MIME 타입 설정
       MailcapCommandMap MailcapCmdMap = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-      MailcapCmdMap.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+      MailcapCmdMap.addMailcap(
+          "text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
       MailcapCmdMap.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-      MailcapCmdMap.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-      MailcapCmdMap.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-      MailcapCmdMap.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+      MailcapCmdMap.addMailcap(
+          "text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+      MailcapCmdMap.addMailcap(
+          "multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+      MailcapCmdMap.addMailcap(
+          "message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
       CommandMap.setDefaultCommandMap(MailcapCmdMap);
 
       //메일 송/수신 옵션 설정
@@ -295,7 +310,7 @@ public class WorklogService {
       Multipart mp;
       StringBuilder sb = new StringBuilder();
 
-      for (int i=0; i < references.length; i++) {
+      for (int i = 0; i < references.length; i++) {
         mbp = new MimeBodyPart();
         mp = new MimeMultipart();
         sb.setLength(0);
@@ -311,16 +326,16 @@ public class WorklogService {
         mp.addBodyPart(mTextPart);
 
         //보낼 첨부파일이 여러 개 일 경우
-        if(attachedFiles[i].contains(",")){
+        if (attachedFiles[i].contains(",")) {
           String[] attachedFiles2 = attachedFiles[i].split(",");
-          for (int j=0; j < attachedFiles2.length; j++) {
+          for (int j = 0; j < attachedFiles2.length; j++) {
             FileDataSource fds = new FileDataSource(attachedFiles2[j]);
             mbp = new MimeBodyPart();
             mbp.setDataHandler(new DataHandler(fds));
             mbp.setFileName(fds.getName());
             mp.addBodyPart(mbp);
           }
-        } else{
+        } else {
           FileDataSource fds = new FileDataSource(attachedFiles[i]); //파일 읽어오기
           mbp.setDataHandler(new DataHandler(fds));
           mbp.setFileName(fds.getName());
@@ -333,9 +348,9 @@ public class WorklogService {
         message.setRecipients(RecipientType.TO, InternetAddress.parse(recipients[i], false));
         //참조인
         message.setRecipients(RecipientType.CC, InternetAddress.parse(references[i], false));
-        Transport.send( message);
+        Transport.send(message);
       }
-    } catch ( Exception e ) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }

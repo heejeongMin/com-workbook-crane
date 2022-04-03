@@ -1,5 +1,6 @@
 package com.workbook.crane.worklog.domain.repository;
 
+import com.workbook.crane.user.domain.model.User;
 import com.workbook.crane.worklog.domain.model.Worklog;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,9 +19,14 @@ public interface WorklogRepository extends
 
   @Query(
       "SELECT w FROM Worklog w "
-          + "WHERE w.workPeriod.startDate >= :from AND w.workPeriod.endDate <= :to "
-          + "ORDER BY w.workPeriod.startDate ASC ")
+          + "WHERE w.workPeriod.startedAt >= :from AND w.workPeriod.finishedAt <= :to "
+          + "AND w.user = :user "
+          + "AND w.deletedAt IS NULL "
+          + "ORDER BY w.workPeriod.startedAt ASC ")
   List<Worklog> findWorklogInGivenPeriod(
-      @Param(value = "from") LocalDateTime from, @Param(value = "to") LocalDateTime to);
+      @Param(value = "from") LocalDateTime from,
+      @Param(value = "to") LocalDateTime to,
+      @Param(value = "user") User user);
 
+  Worklog findByIdAndUser(Long id, User user);
 }
