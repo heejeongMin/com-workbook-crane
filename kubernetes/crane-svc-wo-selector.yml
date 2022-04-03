@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: crane-http
+ labels:
+  app: crane
+spec:
+ ports:
+ - port: 8080
+   protocol: TCP
+   targetPort: 8080
+ type: LoadBalancer
+# sessionAffinity: ClientIP #하나의 클라이언트가 하나의 파드에만 들어오게 하고 싶을 때
+

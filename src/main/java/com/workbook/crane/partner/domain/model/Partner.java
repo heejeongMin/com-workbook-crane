@@ -1,91 +1,95 @@
 package com.workbook.crane.partner.domain.model;
 
+import com.workbook.crane.partner.application.model.command.PartnerCreateCommand;
 import java.time.LocalDateTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.workbook.crane.common.BaseEntity;
 import com.workbook.crane.partner.application.dto.PartnerDto;
-import com.workbook.crane.user.application.dto.UserDto;
-import com.workbook.crane.user.domain.model.User;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @NoArgsConstructor
 @Table(name = "partner")
+@EntityListeners(AuditingEntityListener.class)
 @Entity
-public class Partner extends BaseEntity<PartnerDto> {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
-	
-	@Column(name = "partner_number")
-	private String partnerNumber;
-	
-	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id")
-	private User user;
-	
-	@Column(name = "company_name")
-	private String companyName;
-	
-	@Column(name = "ceo_name")
-	private String ceoName;
-	
-	@Column(name = "phone_number")
-	private String phoneNumber;
-	
-	@Column(name = "deleted_at")
-	private LocalDateTime deletedAt;
+public class Partner {
 
-	@Builder
-	public Partner(Long id, User user, String partnerNumber, String companyName, String ceoName, String phoneNumber, LocalDateTime deletedAt) {
-		this.id = id;
-		this.user = user;
-		this.partnerNumber = partnerNumber;
-		this.companyName = companyName;
-		this.ceoName = ceoName;
-		this.phoneNumber = phoneNumber;
-		this.deletedAt = deletedAt;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
+
+  @Column(name = "partner_number")
+  private String partnerNumber;
+
+  @Column(name = "company_name")
+  private String companyName;
+
+  @Column(name = "ceo_name")
+  private String ceoName;
+
+  @Column(name = "phone_number")
+  private String phoneNumber;
+
+  @Column(name = "created_by")
+  private Long createdBy;
+
+  @CreatedDate
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
+
+  @LastModifiedDate
+  @Column(name = "modified_at")
+  private LocalDateTime modifiedAt;
+
+  @Column(name = "deleted_at")
+  private LocalDateTime deletedAt;
+
+  public static Partner create(PartnerCreateCommand command, Long createdBy, String partnerNumber) {
+  	Partner partner = new Partner();
+  	partner.partnerNumber = partnerNumber;
+  	partner.companyName = command.getCompanyName();
+  	partner.ceoName = command.getCeoName();
+  	partner.phoneNumber = command.getPhoneNumber();
+  	partner.createdBy = createdBy;
+  	return partner;
 	}
 
-	public Partner updatePartner(String companyName, String ceoName, String phoneNumber) {
-		this.companyName = companyName;
-		this.ceoName = ceoName;
-		this.phoneNumber = phoneNumber;
-		return this;
-	}
+  public Partner updatePartner(PartnerDto dto) {
+    if(StringUtils.isNotEmpty(dto.getCompanyName()) && !dto.getCompanyName().equals(companyName)) {
+      this.companyName = dto.getCompanyName();
+    }
+    if(StringUtils.isNotEmpty(dto.getCeoName()) && !dto.getCeoName().equals(ceoName)) {
+      this.ceoName = dto.getCeoName();
+    }
+    if(StringUtils.isNotEmpty(dto.getPhoneNumber()) && !dto.getPhoneNumber().equals(ceoName)) {
+      this.phoneNumber = dto.getPhoneNumber();
+    }
+    if(dto.getCreatedBy() != null && !dto.getCreatedBy().equals(createdBy)) {
+      this.createdBy = dto.getCreatedBy();
+    }
+    return this;
+  }
 
-	@Override
-	public PartnerDto toDto() {
-		PartnerDto partnerDto = new PartnerDto().builder()
-												.id(id)
-												.userDto(user.toDto())
-												.partnerNumber(partnerNumber)
-												.companyName(companyName)
-												.ceoName(ceoName)
-												.phoneNumber(phoneNumber)
-												.deletedAt(deletedAt)
-												.build();
-		
-		return partnerDto;
-	}
-	
-	public void deletePartner(){
-		this.deletedAt = LocalDateTime.now();
-	}
+  public PartnerDto toDto() {
+    return null;
+  }
+
+  public void deletePartner() {
+    this.deletedAt = LocalDateTime.now();
+  }
 }

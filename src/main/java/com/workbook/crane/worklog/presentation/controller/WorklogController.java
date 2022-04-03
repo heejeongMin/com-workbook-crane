@@ -2,23 +2,26 @@ package com.workbook.crane.worklog.presentation.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+import com.workbook.crane.worklog.application.Dto.WorklogExcelDto;
 import com.workbook.crane.worklog.application.Service.WorklogService;
-import com.workbook.crane.worklog.presentation.request.WorklogCreateReq;
-import com.workbook.crane.worklog.presentation.response.WorklogCreateRes;
-import com.workbook.crane.worklog.presentation.response.WorklogRes;
-import java.net.URI;
+import com.workbook.crane.worklog.application.model.command.WorklogCreateCommand;
+import com.workbook.crane.worklog.application.model.criteria.WorklogSearchCriteria;
+import com.workbook.crane.worklog.presentation.request.WorklogCreateRequest;
+import com.workbook.crane.worklog.presentation.request.WorklogExcelReq;
+import com.workbook.crane.worklog.presentation.request.WorklogSearchCriteriaRequest;
+import com.workbook.crane.worklog.presentation.response.WorklogCreateResponse;
+import com.workbook.crane.worklog.presentation.response.WorklogSearchByCriteriaResponse;
+import com.workbook.crane.worklog.presentation.response.WorklogResponse;
+import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,66 +35,65 @@ public class WorklogController {
 
   private final WorklogService worklogService;
 
-  @PostMapping(value = "/crane/v1/worklog"
-//      consumes = "application/json-patch+json"
-  )
-  public ResponseEntity<EntityModel<WorklogCreateRes>> createWorklog(
-      @RequestBody WorklogCreateReq worklogCreateReq){
+  @PostMapping(value = "/crane/v1/worklog", produces = {"application/hal+json"})
+  public ResponseEntity<WorklogCreateResponse> createWorklog(
+      @Valid @RequestBody WorklogCreateRequest worklogCreateRequest,
+      Principal principal) throws Exception {
+    WorklogCreateResponse response =
+        WorklogCreateResponse.from(
+            worklogService.createWorklog(
+                WorklogCreateCommand.of(worklogCreateRequest, principal.getName())));
 
-    WorklogCreateRes res = new WorklogCreateRes(worklogService.createWorklog(worklogCreateReq.toDto()));
+    response.createLink(worklogCreateRequest, principal);
 
-    URI createdURI = linkTo(WorklogController.class).slash(res.getWorklogDto().getId()).toUri();
-    EntityModel<WorklogCreateRes> entityModel = EntityModel.of(
-        res,
-        linkTo(WorklogController.class).slash(res.getWorklogDto().getId()).withSelfRel(),
-        linkTo(WorklogController.class).slash(res.getWorklogDto().getId()).withRel("get"),
-        linkTo(WorklogController.class).slash(res.getWorklogDto().getId()).withRel("delete"),
-        linkTo(WorklogController.class).slash(res.getWorklogDto().getId()).withRel("edit"));
-
-    return ResponseEntity.created(createdURI).body(entityModel);
-//    return new ResponseEntity<>(
-//        new WorklogCreateRes(worklogService.createWorklog(worklogCreateReq.toDto())),
-//        HttpStatus.CREATED);
+    return ResponseEntity.created(
+            linkTo(WorklogController.class).slash(response.getId()).toUri())
+        .body(response);
   }
 
-  @GetMapping(value = "/crane/v1/worklog")
-  public ResponseEntity<WorklogRes> searchAllWorklog(
-      @RequestParam(value = "startDate")
-      @DateTimeFormat(iso = ISO.DATE_TIME)
-          LocalDateTime startDate,
-      @RequestParam(value = "endDate", required = false)
-      @DateTimeFormat(iso = ISO.DATE_TIME)
-          LocalDateTime endDate,
-      @RequestParam(value =  "page", defaultValue = "1") int page,
-      @RequestParam(value =  "size", defaultValue = "1") int size){
+  @GetMapping(value = "/crane/v1/worklog", produces = {"application/hal+json"})
+  public ResponseEntity<WorklogSearchByCriteriaResponse> searchAllWorklog(
+      @RequestParam(value = "startedAt")
+      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime startedAt,
+      @RequestParam(value = "finishedAt", required = false)
+      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime finishedAt,
+      @RequestParam(value = "partnerName", required = false) String partnerName,
+      @RequestParam(value = "page", defaultValue = "0") int page,
+      @RequestParam(value = "size", defaultValue = "8") int size,
+      Principal principal)
+      throws Exception {
+
+    WorklogSearchByCriteriaResponse response =
+        WorklogSearchByCriteriaResponse.from(
+            worklogService.searchAllWorklog(WorklogSearchCriteria.of(
+                startedAt, finishedAt, partnerName, page, size, principal.getName())));
+
+    response.createLink(startedAt, finishedAt, partnerName, page, size, principal);
+
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping(value = "/crane/v1/worklog/{id}", produces = {"application/hal+json"})
+  public ResponseEntity<WorklogResponse> getWorklogById(
+      @PathVariable(value = "id") Long id, Principal principal) throws Exception {
+    WorklogResponse response =
+        WorklogResponse.from(worklogService.getWorklogById(id, principal.getName()));
+    response.createLink(id, principal);
+    return ResponseEntity.ok(response);
+  }
+
+  @DeleteMapping(value = "/crane/v1/worklog/{id}")
+  public ResponseEntity<WorklogResponse> deleteWorklog(
+      @PathVariable(value = "id") Long id, Principal principal) throws Exception {
     return ResponseEntity.ok(
-        new WorklogRes(worklogService.searchWorklogAll(startDate, endDate, page, size)));
+        WorklogResponse.from(worklogService.deleteWorklog(id, principal.getName())));
   }
 
-  @GetMapping(value = "/crane/v1/worklog/{id}")
-  public ResponseEntity<WorklogRes> searchWorklogById(@PathVariable(value = "id") Long id){
-    return ResponseEntity.ok(
-        new WorklogRes(Arrays.asList(worklogService.searchWorklogById(id))));
-  }
+  @PostMapping(value = "/crane/v1/worklog/email")
+  public ResponseEntity sendWorklogEmail(
+      @Valid @RequestBody WorklogExcelReq worklogExcelReq, Principal principal) throws Exception {
+    worklogService.sendWorklogEmail(WorklogExcelDto.from(worklogExcelReq, principal.getName()));
 
-  @PatchMapping(value = "/crane/v1/worklog/performed")
-  public ResponseEntity<WorklogRes> updateWorklogPerformed(
-      @RequestParam(value = "ids") List<Long> ids,
-      @RequestParam(value = "isPerformed") boolean isPerformed){
-    return ResponseEntity.ok(
-        new WorklogRes(worklogService.updateWorklogIFPerformed(ids, isPerformed)));
-  }
-
-  @PatchMapping(value = "/crane/v1/worklog/payment-collected")
-  public ResponseEntity<WorklogRes> updateWorklogPaymentCollected(
-      @RequestParam(value = "ids") List<Long> ids,
-      @RequestParam(value = "isPaymentCollected") boolean isPaymentCollected) throws Exception {
-    return ResponseEntity.ok(
-        new WorklogRes(worklogService.updateWorklogIFPaymentCollected(ids, isPaymentCollected)));
-  }
-
-  @DeleteMapping(value = "/crane/v1/worklog")
-  public ResponseEntity<WorklogRes> deleteWorklog(@RequestParam(value = "ids") List<Long> ids) {
-    return ResponseEntity.ok(new WorklogRes(worklogService.deleteWorklog(ids)));
+    return ResponseEntity.ok(null);
   }
 }

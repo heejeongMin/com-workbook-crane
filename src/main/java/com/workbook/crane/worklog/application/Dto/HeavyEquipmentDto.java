@@ -1,29 +1,29 @@
 package com.workbook.crane.worklog.application.Dto;
 
-import com.workbook.crane.common.BaseDto;
+import com.workbook.crane.worklog.application.model.info.HeavyEquipmentInfo;
 import com.workbook.crane.worklog.domain.model.EquipmentType;
-import com.workbook.crane.worklog.domain.model.HeavyEquipment;
 import com.workbook.crane.worklog.domain.model.EquipmentUnit;
-import lombok.AllArgsConstructor;
+import java.time.Instant;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class HeavyEquipmentDto extends BaseDto<HeavyEquipment> {
-  private EquipmentType equipmentType;
-  private long weight;
-  private EquipmentUnit equipmentUnit;
-  private PriceDto priceDto;
+public class HeavyEquipmentDto {
 
-  @Override
-  public HeavyEquipment toEntity() {
-    return HeavyEquipment.builder()
-        .equipmentType(equipmentType)
-        .equipmentUnit(equipmentUnit)
-        .equipmentWeight(weight)
-        .price(priceDto.toEntity())
-        .build();
+  private Long id;
+  private EquipmentType equipmentType;
+  private EquipmentUnit equipmentUnit;
+  private long equipmentWeight;
+  private Instant createdAt;
+  private Instant deletedAt;
+
+  public static HeavyEquipmentDto from(HeavyEquipmentInfo info) {
+    HeavyEquipmentDto dto = new HeavyEquipmentDto();
+    dto.id = info.getId();
+    dto.equipmentType = info.getEquipmentType();
+    dto.equipmentUnit = info.getEquipmentUnit();
+    dto.equipmentWeight = info.getEquipmentWeight();
+    dto.createdAt = info.getCreatedAt();
+    dto.deletedAt = info.getDeletedAt();
+    return dto;
   }
 }

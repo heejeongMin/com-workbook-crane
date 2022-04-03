@@ -1,24 +1,28 @@
 package com.workbook.crane.worklog.domain.model;
 
-import com.workbook.crane.common.BaseEntity;
-import com.workbook.crane.worklog.application.Dto.HeavyEquipmentDto;
+import com.workbook.crane.user.domain.model.User;
+import com.workbook.crane.worklog.application.model.command.HeavyEquipmentCreateCommand;
+import java.time.Instant;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "heavy_equipment")
 @Entity
-public class HeavyEquipment extends BaseEntity<HeavyEquipmentDto> {
+public class HeavyEquipment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,26 +40,31 @@ public class HeavyEquipment extends BaseEntity<HeavyEquipmentDto> {
   @Column(name = "equipment_weight")
   private long equipmentWeight;
 
-  @Embedded
-  private Price price;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 
-  @Override
-  public HeavyEquipmentDto toDto() {
-    return new HeavyEquipmentDto(equipmentType, equipmentWeight, equipmentUnit, price.toDto());
+  @Column(name = "created_at")
+  private Instant createdAt;
+
+  @Column(name = "deleted_at")
+  private Instant deletedAt;
+
+  public String getEquipment() {
+    return equipmentWeight + "" + this.equipmentUnit;
   }
 
-  @Builder
-  public HeavyEquipment(Long id, EquipmentType equipmentType, EquipmentUnit equipmentUnit,
-      long equipmentWeight, Price price) {
-    this.id = id;
-    this.equipmentType = equipmentType;
-    this.equipmentUnit = equipmentUnit;
-    this.equipmentWeight = equipmentWeight;
-    this.price = price;
+  public static HeavyEquipment create(HeavyEquipmentCreateCommand command, User user) {
+    HeavyEquipment heavyEquipment = new HeavyEquipment();
+    heavyEquipment.equipmentType = command.getEquipmentType();
+    heavyEquipment.equipmentUnit = command.getEquipmentUnit();
+    heavyEquipment.equipmentWeight = command.getEquipmentWeight();
+    heavyEquipment.user = user;
+    heavyEquipment.createdAt = Instant.now();
+    return heavyEquipment;
   }
 
-  public Money calculateTotal(long hours){
-    return new Money(hours * price.getPricePerUnit(), price.getUnit());
+  public void markAsDeleted() {
+    this.deletedAt = Instant.now();
   }
-
 }
