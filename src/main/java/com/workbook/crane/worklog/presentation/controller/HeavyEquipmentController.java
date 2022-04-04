@@ -1,5 +1,7 @@
 package com.workbook.crane.worklog.presentation.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import com.workbook.crane.worklog.application.Service.HeavyEquipmentService;
 import com.workbook.crane.worklog.application.model.command.HeavyEquipmentCreateCommand;
 import com.workbook.crane.worklog.presentation.request.HeavyEquipmentCreateRequest;
@@ -46,7 +48,9 @@ public class HeavyEquipmentController {
                 HeavyEquipmentCreateCommand.of(request, principal.getName())));
     response.createLink(request, principal);
 
-    return ResponseEntity.ok(response);
+    return ResponseEntity.created(
+            linkTo(HeavyEquipmentController.class).slash(response.getHeavyEquipmentDto().getId()).toUri())
+        .body(response);
   }
 
   @DeleteMapping("/crane/v1/heavyEquipment/{id}")
