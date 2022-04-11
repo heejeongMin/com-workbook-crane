@@ -30,9 +30,13 @@ public class HeavyEquipmentController {
   @GetMapping("/crane/v1/heavyEquipment")
   public ResponseEntity<HeavyEquipmentSearchResponse> getAllHeavyEquipments(Principal principal)
       throws Exception {
+    log.info("in");
     HeavyEquipmentSearchResponse response =
         HeavyEquipmentSearchResponse.from(
             heavyEquipmentService.getAllHeavyEquipments(principal.getName()));
+    if(response.getHeavyEquipmentDtos().get(0) != null){
+      log.info("response " + response.getHeavyEquipmentDtos().get(0).getDeletedAt());
+    }
     response.createLink(principal);
 
     return ResponseEntity.ok(response);
@@ -42,11 +46,14 @@ public class HeavyEquipmentController {
   public ResponseEntity<HeavyEquipmentCreateResponse> createHeavyEquipment(
       @Valid @RequestBody HeavyEquipmentCreateRequest request, Principal principal)
       throws Exception {
+    log.info("in");
     HeavyEquipmentCreateResponse response =
         HeavyEquipmentCreateResponse.from(
             heavyEquipmentService.createHeavyEquipment(
                 HeavyEquipmentCreateCommand.of(request, principal.getName())));
     response.createLink(request, principal);
+
+    log.info("here : " + response.getHeavyEquipmentDto().getDeletedAt());
 
     return ResponseEntity.created(
             linkTo(HeavyEquipmentController.class).slash(response.getHeavyEquipmentDto().getId()).toUri())
