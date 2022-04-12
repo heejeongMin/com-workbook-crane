@@ -6,9 +6,9 @@ create TABLE IF NOT EXISTS users
 	  full_name VARCHAR(20) NOT NULL DEFAULT '' COMMENT '유저이름',
 	  email VARCHAR(30) NOT NULL DEFAULT '' COMMENT '이메일',
 	  role TINYINT NOT NULL DEFAULT 0 COMMENT '권한',
-	  created_at TIMESTAMP NOT NULL COMMENT '생성 일자',
-    updated_at TIMESTAMP NOT NULL COMMENT '수정 일자',
-	  deleted_at TIMESTAMP COMMENT '삭제 일자'
+	  created_at DATETIME NOT NULL COMMENT '생성 일자',
+    updated_at DATETIME NOT NULL COMMENT '수정 일자',
+	  deleted_at DATETIME COMMENT '삭제 일자'
 );
 
 create TABLE IF NOT EXISTS partner
@@ -42,8 +42,8 @@ create TABLE IF NOT EXISTS worklog
   finished_at TIMESTAMP NOT NULL COMMENT '종료 일자 및 시간',
   partner_id BIGINT UNSIGNED NOT NULL default 0  COMMENT '거래처 아이디',
   user_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '유저 아이디',
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
-  deleted_at TIMESTAMP COMMENT '기록 삭제 일자 및 시간'
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
+  deleted_at DATETIME COMMENT '기록 삭제 일자 및 시간'
 );
 
 create TABLE IF NOT EXISTS heavy_equipment
@@ -53,8 +53,8 @@ create TABLE IF NOT EXISTS heavy_equipment
      equipment_unit varchar(10) NOT NULL DEFAULT '' COMMENT '장비 무게 단위',
      equipment_weight BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '장비 무게',
      user_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '유저 아이디',
-     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일자',
-     deleted_at TIMESTAMP COMMENT '삭제 일자'
+     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일자',
+     deleted_at DATETIME COMMENT '삭제 일자'
 );
 
 insert into partner_number_tracker (identifier, identifier_seq) values ('A', 0);

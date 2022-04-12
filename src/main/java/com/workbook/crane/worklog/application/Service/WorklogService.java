@@ -268,7 +268,7 @@ public class WorklogService {
     Properties props = new Properties();
     props.put("mail.transport.protocol", "smtp");
     props.put("mail.smtp.host", "smtp.gmail.com");
-    props.put("mail.smtp.port", "465");
+    props.put("mail.smtp.port", "587");
     props.put("mail.smtp.auth", "true");
 
     props.put("mail.smtp.quitwait", "false");
