@@ -13,6 +13,7 @@ public class HeavyEquipmentDto {
   private EquipmentType equipmentType;
   private EquipmentUnit equipmentUnit;
   private long equipmentWeight;
+  private Double equipmentPricePerDay;
   private Instant createdAt;
   private Instant deletedAt;
 
@@ -22,6 +23,7 @@ public class HeavyEquipmentDto {
     dto.equipmentType = info.getEquipmentType();
     dto.equipmentUnit = info.getEquipmentUnit();
     dto.equipmentWeight = info.getEquipmentWeight();
+    dto.equipmentPricePerDay = info.getEquipmentPricePerDay();
     dto.createdAt = info.getCreatedAt();
     dto.deletedAt = info.getDeletedAt();
     return dto;

@@ -11,6 +11,7 @@ public class HeavyEquipmentCreateCommand {
   private EquipmentType equipmentType;
   private EquipmentUnit equipmentUnit;
   private long equipmentWeight;
+  private Double equipemntPricePerDay;
   private String username;
 
   public static HeavyEquipmentCreateCommand of(
@@ -19,6 +20,7 @@ public class HeavyEquipmentCreateCommand {
     command.equipmentType = request.getEquipmentType();
     command.equipmentUnit = request.getEquipmentUnit();
     command.equipmentWeight = request.getEquipmentWeight();
+    command.equipemntPricePerDay = request.getEquipmentPricePerDay();
     command.username = username;
     return command;
   }

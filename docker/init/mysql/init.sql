@@ -39,6 +39,7 @@ create TABLE IF NOT EXISTS worklog
   equipment_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '장비 아이디',
   work_location VARCHAR(25) NOT NULL DEFAULT '' COMMENT '시/도',
   work_time smallInt NOT NULL COMMENT '시작 일자 및 시간',
+  work_pay double(11,2) DEFAULT 0 COMMENT '일당',
   partner_id BIGINT UNSIGNED NOT NULL default 0  COMMENT '거래처 아이디',
   user_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '유저 아이디',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
@@ -51,6 +52,7 @@ create TABLE IF NOT EXISTS heavy_equipment
      equipment_type varchar(10) NOT NULL DEFAULT '' COMMENT '장비명',
      equipment_unit varchar(10) NOT NULL DEFAULT '' COMMENT '장비 무게 단위',
      equipment_weight BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '장비 무게',
+     equipment_price_per_day double(11,2) DEFAULT 0 COMMENT '시간당 장비 가격',
      user_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '유저 아이디',
      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일자',
      deleted_at DATETIME COMMENT '삭제 일자'

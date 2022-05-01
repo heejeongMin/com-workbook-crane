@@ -17,6 +17,7 @@ import com.workbook.crane.worklog.domain.repository.WorklogRepository;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -45,6 +46,7 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -62,6 +64,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class WorklogService {
 
+  private static final DecimalFormat workPayFormat = new DecimalFormat("#,###.##");
   private final AuthService authService;
   private final PartnerService partnerService;
   private final HeavyEquipmentService heavyEquipmentService;
@@ -83,10 +86,8 @@ public class WorklogService {
     HeavyEquipment heavyEquipment =
         heavyEquipmentService.getHeavyEquipmentOrElseThrow(command.getEquipmentId(), user);
 
-    Worklog worklog =
-        worklogRepository.save(Worklog.create(command, user, partner, heavyEquipment));
-
-    return WorklogCreateInfo.from(worklog);
+    return WorklogCreateInfo.from(
+        worklogRepository.save(Worklog.create(command, user, partner, heavyEquipment)));
   }
 
   @Transactional(readOnly = true)
@@ -127,130 +128,151 @@ public class WorklogService {
     return WorklogInfo.from(worklog);
   }
 
-//  public void sendWorklogEmail(WorklogExcelDto dto) throws Exception {
-//    log.info(System.getProperty("java.io.tmpdir"));
-//
-//    String filePath = System.getProperty("java.io.tmpdir") + "/worklog" + Instant.now().toEpochMilli() + ".xlsx";
-//    extractWorklog(dto, filePath);
-//    sendEmail(dto.getEmail(), filePath);
-//
-//  }
+  public void sendWorklogEmail(WorklogExcelDto dto) throws Exception {
+    log.info(System.getProperty("java.io.tmpdir"));
 
-//  private void extractWorklog (WorklogExcelDto dto, String filePath) throws Exception{
-//    User user = authService.getUserOrElseThrow(dto.getUsername());
-//    List<Worklog> worklogList =
-//        worklogRepository.findWorklogInGivenPeriod(dto.getFrom(), dto.getTo(), user);
-//
-//    try {
-//      XSSFRow xssfRow;
-//      XSSFCell xssfCell;
-//
-//      int rowNo = 0; // 행의 갯수
-//      XSSFWorkbook xssfWb = new XSSFWorkbook(); //XSSFWorkbook 객체 생성
-//      XSSFSheet xssfSheet = xssfWb.createSheet("워크 시트1"); // 워크시트 이름 설정
-//      // 폰트 스타일
-//      XSSFFont font = xssfWb.createFont();
-//      font.setFontName(HSSFFont.FONT_ARIAL); // 폰트 스타일
-//      font.setFontHeightInPoints((short) 20); // 폰트 크기
-//      font.setBold(true); // Bold 설정
-//      font.setColor(new XSSFColor(Color.decode("#457ba2"))); // 폰트 색 지정
-//      // 테이블 셀 스타일
-//      CellStyle cellStyle = xssfWb.createCellStyle();
-//      xssfSheet.setColumnWidth(0, 2100); // 특정 cell 설정 => 5번째(e) cell 2100=7.63
-//      xssfSheet.setColumnWidth(1, 5000); // 7번째(h) cell 3400=12.63
-//      xssfSheet.setColumnWidth(2, 5000); // 7번째(h) cell 3400=12.63
-//      xssfSheet.setColumnWidth(3, 5000); // 7번째(h) cell 3400=12.63
-//      xssfSheet.setColumnWidth(5, 3000); // 7번째(h) cell 3400=12.63
-//      cellStyle.setFont(font); // cellStyle에 font를 적용
-//      cellStyle.setAlignment(HorizontalAlignment.CENTER); // 정렬
-//      // 셀병합
-//      xssfSheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 4)); //첫행, 마지막행, 첫열, 마지막열 병합
-//      // 타이틀 생성
-//      xssfRow = xssfSheet.createRow(rowNo++); // 행 객체 추가
-//      xssfCell = xssfRow.createCell((short) 0); // 추가한 행에 셀 객체 추가
-//      xssfCell.setCellStyle(cellStyle); // 셀에 스타일 지정
-//      xssfCell.setCellValue("근무일정"); // 데이터 입력
-//      xssfSheet.createRow(rowNo++);
-//
-//      xssfRow = xssfSheet.createRow(rowNo++); // 빈행 추가 //테이블 스타일 설정
-//
-//      CellStyle tableCellStyle = xssfWb.createCellStyle();
-//      tableCellStyle.setBorderTop(BorderStyle.THIN); // 테두리 위쪽
-//      tableCellStyle.setBorderBottom(BorderStyle.THIN); // 테두리 아래쪽
-//      tableCellStyle.setBorderLeft(BorderStyle.THIN); // 테두리 왼쪽
-//      tableCellStyle.setBorderRight(BorderStyle.THIN); // 테두리 오른쪽
-//
-//      xssfRow = xssfSheet.createRow(rowNo++);
-//      xssfCell = xssfRow.createCell((short) 0);
-//      xssfCell.setCellStyle(tableCellStyle);
-//      xssfCell.setCellValue("seq");
-//
-//      xssfCell = xssfRow.createCell((short) 1);
-//      xssfCell.setCellStyle(tableCellStyle);
-//      xssfCell.setCellValue("시작일시");
-//
-//      xssfCell = xssfRow.createCell((short) 2);
-//      xssfCell.setCellStyle(tableCellStyle);
-//      xssfCell.setCellValue("종료일시");
-//
-//      xssfCell = xssfRow.createCell((short) 3);
-//      xssfCell.setCellStyle(tableCellStyle);
-//      xssfCell.setCellValue("근무장소");
-//
-//      xssfCell = xssfRow.createCell((short) 4);
-//      xssfCell.setCellStyle(tableCellStyle);
-//      xssfCell.setCellValue("장비");
-//
-//      xssfCell = xssfRow.createCell((short) 5);
-//      xssfCell.setCellStyle(tableCellStyle);
-//      xssfCell.setCellValue("거래처");
-//
-//      int seq = 1;
-//      for (Worklog worklog : worklogList) {
-//        xssfRow = xssfSheet.createRow(rowNo++);
-//
-//        xssfCell = xssfRow.createCell((short) 0);
-//        xssfCell.setCellStyle(tableCellStyle);
-//        xssfCell.setCellValue(seq++);
-//
-//        xssfCell = xssfRow.createCell((short) 1);
-//        xssfCell.setCellStyle(tableCellStyle);
-//        xssfCell.setCellValue(worklog.getWorkPeriod().getStartedAt()
-//            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH시mm분")));
-//
-//        xssfCell = xssfRow.createCell((short) 2);
-//        xssfCell.setCellStyle(tableCellStyle);
-//        xssfCell.setCellValue(worklog.getWorkPeriod().getFinishedAt()
-//            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH시mm분")));
-//
-//        xssfCell = xssfRow.createCell((short) 3);
-//        xssfCell.setCellStyle(tableCellStyle);
-//        xssfCell.setCellValue(worklog.getLocation());
-//
-//        HeavyEquipment heavyEquipment = heavyEquipmentRepository.getOne(worklog.getEquipment().getId());
-//
-//        xssfCell = xssfRow.createCell((short) 4);
-//        xssfCell.setCellStyle(tableCellStyle);
-//        xssfCell.setCellValue(heavyEquipment.getEquipment());
-//
-//        xssfCell = xssfRow.createCell((short) 5);
-//        xssfCell.setCellStyle(tableCellStyle);
-//        xssfCell.setCellValue(worklog.getPartner().getCompanyName());
-//      }
-//
-//      File file = new File(filePath);
-//      FileOutputStream fos = null;
-//      fos = new FileOutputStream(file);
-//      xssfWb.write(fos);
-//      if (fos != null) {
-//        fos.close();
-//      }
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//      throw e;
-//    }
-//  }
-//
+    String filePath = System.getProperty("java.io.tmpdir") + "/worklog" + Instant.now().toEpochMilli() + ".xlsx";
+    extractWorklog(dto, filePath);
+    sendEmail(dto.getEmail(), filePath);
+  }
+
+  private void extractWorklog (WorklogExcelDto dto, String filePath) throws Exception{
+    User user = authService.getUserOrElseThrow(dto.getUsername());
+    List<Worklog> worklogList =
+        worklogRepository.findWorklogInGivenPeriod(dto.getFrom(), dto.getTo(), user);
+    Double totalWorkPay = worklogList.stream().mapToDouble(Worklog::getWorkPay).sum();
+
+    try {
+      XSSFRow xssfRow;
+      XSSFCell xssfCell;
+
+      int rowNo = 0; // 행의 갯수
+      XSSFWorkbook xssfWb = new XSSFWorkbook(); //XSSFWorkbook 객체 생성
+      XSSFSheet xssfSheet = xssfWb.createSheet("워크 시트1"); // 워크시트 이름 설정
+      // 폰트 스타일
+      XSSFFont font = xssfWb.createFont();
+      font.setFontName(HSSFFont.FONT_ARIAL); // 폰트 스타일
+      font.setFontHeightInPoints((short) 20); // 폰트 크기
+      font.setBold(true); // Bold 설정
+      font.setColor(new XSSFColor(Color.decode("#457ba2"))); // 폰트 색 지정
+      // 테이블 셀 스타일
+      CellStyle cellStyle = xssfWb.createCellStyle();
+      xssfSheet.setColumnWidth(0, 2100); // 특정 cell 설정 => 5번째(e) cell 2100=7.63
+      xssfSheet.setColumnWidth(1, 3000); // 7번째(h) cell 3400=12.63
+      xssfSheet.setColumnWidth(2, 5000); // 7번째(h) cell 3400=12.63
+      xssfSheet.setColumnWidth(3, 3000); // 7번째(h) cell 3400=12.63
+      xssfSheet.setColumnWidth(4, 5000); // 7번째(h) cell 3400=12.63
+      xssfSheet.setColumnWidth(5, 4000); // 7번째(h) cell 3400=12.63
+      cellStyle.setFont(font); // cellStyle에 font를 적용
+      cellStyle.setAlignment(HorizontalAlignment.CENTER); // 정렬
+      cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+      // 셀병합
+      xssfSheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 5)); //첫행, 마지막행, 첫열, 마지막열 병합
+      // 타이틀 생성
+      xssfRow = xssfSheet.createRow(rowNo++); // 행 객체 추가
+      xssfCell = xssfRow.createCell((short) 0); // 추가한 행에 셀 객체 추가
+      xssfCell.setCellStyle(cellStyle); // 셀에 스타일 지정
+      xssfCell.setCellValue("근무일정"); // 데이터 입력
+      xssfRow = xssfSheet.createRow(rowNo++);
+
+      // 총합추가
+      XSSFFont totalPayFont = xssfWb.createFont();
+      font.setFontName(HSSFFont.FONT_ARIAL); // 폰트 스타일
+      font.setBold(true); // Bold 설정
+      CellStyle totalPayCellStyle = xssfWb.createCellStyle();
+      totalPayCellStyle.setFont(totalPayFont);
+
+      xssfSheet.addMergedRegion(new CellRangeAddress(2, 2, 1, 5)); //첫행, 마지막행, 첫열, 마지막열 병합
+      xssfRow = xssfSheet.createRow(rowNo++);
+      xssfCell = xssfRow.createCell((short) 0);
+      xssfCell.setCellStyle(totalPayCellStyle);
+      xssfCell.setCellValue("총합");
+
+      xssfCell = xssfRow.createCell((short) 1);
+      xssfCell.setCellStyle(totalPayCellStyle);
+      xssfCell.setCellValue(workPayFormat.format(totalWorkPay));
+
+      xssfRow = xssfSheet.createRow(rowNo++); // 빈행 추가 //테이블 스타일 설정
+
+      CellStyle tableCellStyle = xssfWb.createCellStyle();
+      tableCellStyle.setBorderTop(BorderStyle.THIN); // 테두리 위쪽
+      tableCellStyle.setBorderBottom(BorderStyle.THIN); // 테두리 아래쪽
+      tableCellStyle.setBorderLeft(BorderStyle.THIN); // 테두리 왼쪽
+      tableCellStyle.setBorderRight(BorderStyle.THIN); // 테두리 오른쪽
+
+      xssfRow = xssfSheet.createRow(rowNo++);
+      xssfCell = xssfRow.createCell((short) 0);
+      xssfCell.setCellStyle(tableCellStyle);
+      xssfCell.setCellValue("seq");
+
+      xssfCell = xssfRow.createCell((short) 1);
+      xssfCell.setCellStyle(tableCellStyle);
+      xssfCell.setCellValue("근무시간");
+
+      xssfCell = xssfRow.createCell((short) 2);
+      xssfCell.setCellStyle(tableCellStyle);
+      xssfCell.setCellValue("근무장소");
+
+      xssfCell = xssfRow.createCell((short) 3);
+      xssfCell.setCellStyle(tableCellStyle);
+      xssfCell.setCellValue("장비");
+
+      xssfCell = xssfRow.createCell((short) 4);
+      xssfCell.setCellStyle(tableCellStyle);
+      xssfCell.setCellValue("금액");
+
+      xssfCell = xssfRow.createCell((short) 5);
+      xssfCell.setCellStyle(tableCellStyle);
+      xssfCell.setCellValue("거래처");
+
+
+      int seq = 1;
+
+      for (Worklog worklog : worklogList) {
+        xssfRow = xssfSheet.createRow(rowNo++);
+
+        xssfCell = xssfRow.createCell((short) 0);
+        xssfCell.setCellStyle(tableCellStyle);
+        xssfCell.setCellValue(seq++);
+
+        xssfCell = xssfRow.createCell((short) 1);
+        xssfCell.setCellStyle(tableCellStyle);
+        xssfCell.setCellValue(worklog.getWorkTime().getDescription());
+
+        xssfCell = xssfRow.createCell((short) 2);
+        xssfCell.setCellStyle(tableCellStyle);
+        xssfCell.setCellValue(worklog.getLocation());
+
+        HeavyEquipment heavyEquipment = heavyEquipmentRepository.getOne(worklog.getEquipment().getId());
+
+        xssfCell = xssfRow.createCell((short) 3);
+        xssfCell.setCellStyle(tableCellStyle);
+        xssfCell.setCellValue(heavyEquipment.getEquipment());
+
+        xssfCell = xssfRow.createCell((short) 4);
+        xssfCell.setCellStyle(tableCellStyle);
+        xssfCell.setCellValue(workPayFormat.format(worklog.getWorkPay()));
+
+        xssfCell = xssfRow.createCell((short) 5);
+        xssfCell.setCellStyle(tableCellStyle);
+        xssfCell.setCellValue(worklog.getPartner().getCompanyName());
+      }
+
+
+
+      File file = new File(filePath);
+      FileOutputStream fos = null;
+      fos = new FileOutputStream(file);
+      xssfWb.write(fos);
+      if (fos != null) {
+        fos.close();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
 
   private void sendEmail(String email, String filePath) {
     String subject = "[두루미] 근무 일정 엑셀";

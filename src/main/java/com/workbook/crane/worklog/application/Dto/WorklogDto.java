@@ -13,6 +13,8 @@ public class WorklogDto {
   private HeavyEquipmentDto heavyEquipmentDto;
   private String location;
   private WorkTime workTime;
+
+  private Double workPay;
   private PartnerDto partnerDto;
   private LocalDateTime createdAt;
   private LocalDateTime deletedAt;
@@ -23,6 +25,7 @@ public class WorklogDto {
     dto.heavyEquipmentDto = HeavyEquipmentDto.from(info.getHeavyEquipmentInfo());
     dto.location = info.getLocation();
     dto.workTime = info.getWorkTime();
+    dto.workPay = info.getWorkPay();
     dto.partnerDto = PartnerDto.from(info.getPartnerInfo());
     dto.createdAt = info.getCreatedAt();
     dto.deletedAt = info.getDeletedAt();

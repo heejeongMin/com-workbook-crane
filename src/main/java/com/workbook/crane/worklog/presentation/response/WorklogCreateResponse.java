@@ -21,6 +21,8 @@ public class WorklogCreateResponse extends RepresentationModel<WorklogCreateResp
   private String location;
   private WorkTime workTime;
 
+  private Double workPay;
+
   private Long partnerId;
   private LocalDateTime createdAt;
   private LocalDateTime deletedAt;
@@ -31,6 +33,8 @@ public class WorklogCreateResponse extends RepresentationModel<WorklogCreateResp
     response.equipmentId = info.getEquipmentId();
     response.location = info.getLocation();
     response.workTime = info.getWorkTime();
+    response.workPay = info.getWorkPay();
+    response.partnerId = info.getPartnerId();
     response.createdAt = info.getCreatedAt();
     response.deletedAt = info.getDeletedAt();
     return response;

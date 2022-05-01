@@ -11,8 +11,9 @@ public class WorklogInfo {
   private Long id;
   private HeavyEquipmentInfo heavyEquipmentInfo;
   private String location;
-
   private WorkTime workTime;
+
+  private Double workPay;
   private PartnerInfo partnerInfo;
   private LocalDateTime createdAt;
   private LocalDateTime deletedAt;
@@ -23,6 +24,7 @@ public class WorklogInfo {
     info.heavyEquipmentInfo = HeavyEquipmentInfo.from(worklog.getEquipment());
     info.location = worklog.getLocation();
     info.workTime = worklog.getWorkTime();
+    info.workPay = worklog.getWorkPay();
     info.partnerInfo = PartnerInfo.from(worklog.getPartner());
     info.createdAt = worklog.getCreatedAt();
     info.deletedAt = worklog.getDeletedAt();

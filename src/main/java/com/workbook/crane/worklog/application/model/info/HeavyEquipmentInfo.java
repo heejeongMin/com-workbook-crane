@@ -16,6 +16,7 @@ public class HeavyEquipmentInfo {
   private EquipmentType equipmentType;
   private EquipmentUnit equipmentUnit;
   private long equipmentWeight;
+  private Double equipmentPricePerDay;
   private Instant createdAt;
   private Instant deletedAt;
 
@@ -25,6 +26,7 @@ public class HeavyEquipmentInfo {
     info.equipmentType = heavyEquipment.getEquipmentType();
     info.equipmentUnit = heavyEquipment.getEquipmentUnit();
     info.equipmentWeight = heavyEquipment.getEquipmentWeight();
+    info.equipmentPricePerDay = heavyEquipment.getEquipmentPricePerDay();
     info.createdAt = heavyEquipment.getCreatedAt();
     info.deletedAt = heavyEquipment.getDeletedAt();
     return info;

@@ -40,6 +40,9 @@ public class Worklog {
   @Column(name = "work_time", columnDefinition = "SMALLINT")
   private WorkTime workTime;
 
+  @Column(name = "work_pay")
+  private Double workPay;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "partner_id")
   private Partner partner;
@@ -60,6 +63,7 @@ public class Worklog {
     worklog.equipment = heavyEquipment;
     worklog.location = command.getLocation();
     worklog.workTime = command.getWorkTime();
+    worklog.workPay = command.getWorkTime().calculate(command.getEquipmentPricePerDay());
     worklog.partner = partner;
     worklog.user = user;
     worklog.createdAt = LocalDateTime.now();
@@ -69,4 +73,5 @@ public class Worklog {
   public void markWorklogAsDeleted(){
     this.deletedAt = LocalDateTime.now();
   }
+
 }

@@ -88,11 +88,11 @@ public class WorklogController {
         WorklogResponse.from(worklogService.deleteWorklog(id, principal.getName())));
   }
 
-//  @PostMapping(value = "/crane/v1/worklog/email")
-//  public ResponseEntity sendWorklogEmail(
-//      @Valid @RequestBody WorklogExcelReq worklogExcelReq, Principal principal) throws Exception {
-//    worklogService.sendWorklogEmail(WorklogExcelDto.from(worklogExcelReq, principal.getName()));
-//
-//    return ResponseEntity.ok(null);
-//  }
+  @PostMapping(value = "/crane/v1/worklog/email")
+  public ResponseEntity sendWorklogEmail(
+      @Valid @RequestBody WorklogExcelReq worklogExcelReq, Principal principal) throws Exception {
+    worklogService.sendWorklogEmail(WorklogExcelDto.from(worklogExcelReq, principal.getName()));
+
+    return ResponseEntity.ok(null);
+  }
 }

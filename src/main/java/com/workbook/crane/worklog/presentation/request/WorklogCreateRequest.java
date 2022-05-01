@@ -14,6 +14,8 @@ public class WorklogCreateRequest {
   private final WorkTime workTime;
   @NotNull
   private final Long equipmentId;
+  @NotNull
+  private final Double equipmentPricePerDay;
   @NotBlank
   private final String location;
   @NotNull

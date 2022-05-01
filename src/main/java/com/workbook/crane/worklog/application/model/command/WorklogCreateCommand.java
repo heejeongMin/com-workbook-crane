@@ -13,6 +13,7 @@ public class WorklogCreateCommand {
 
   private WorkTime workTime;
   private Long equipmentId;
+  private Double equipmentPricePerDay;
   private String location;
   private Long partnerId;
   private String username;
@@ -21,6 +22,7 @@ public class WorklogCreateCommand {
     WorklogCreateCommand command = new WorklogCreateCommand();
     command.workTime = request.getWorkTime();
     command.equipmentId = request.getEquipmentId();
+    command.equipmentPricePerDay = request.getEquipmentPricePerDay();
     command.location = request.getLocation();
     command.partnerId = request.getPartnerId();
     command.username = username;

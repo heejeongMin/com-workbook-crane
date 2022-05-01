@@ -12,4 +12,6 @@ public class HeavyEquipmentCreateRequest {
   @NotNull
   private EquipmentUnit equipmentUnit;
   private long equipmentWeight;
+  @NotNull
+  private Double equipmentPricePerDay;
 }

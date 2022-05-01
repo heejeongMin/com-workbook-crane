@@ -16,6 +16,10 @@ public enum WorkTime {
   private String description;
   private double timeScale;
 
+  public Double calculate(Double equipmentPricePerDay){
+    return Math.abs(equipmentPricePerDay * this.timeScale);
+  }
+
   @Converter
   public class WorkTimeConverter implements AttributeConverter<WorkTime, Integer> {
     @Override
