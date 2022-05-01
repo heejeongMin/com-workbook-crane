@@ -6,6 +6,8 @@ import lombok.Getter;
 
 @Getter
 public class UserDetailResponse {
+
+  private Long id;
   private String username;
   private String password;
   private String fullname;
@@ -14,6 +16,7 @@ public class UserDetailResponse {
 
   public static UserDetailResponse from(UserDetailInfo info) {
     UserDetailResponse response = new UserDetailResponse();
+    response.id = info.getId();
     response.username = info.getUsername();
     response.password = info.getPassword();
     response.fullname = info.getFullname();

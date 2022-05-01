@@ -8,11 +8,8 @@ import com.workbook.crane.partner.domain.model.Partner;
 import com.workbook.crane.user.domain.model.User;
 import com.workbook.crane.worklog.application.model.criteria.WorklogSearchCriteria;
 import com.workbook.crane.worklog.domain.model.Worklog;
-import java.time.LocalDateTime;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -30,8 +27,8 @@ public class WorklogRepositoryImpl
       WorklogSearchCriteria criteria, Partner partner, User user) {
 
     BooleanBuilder builder = new BooleanBuilder();
-    builder.and(worklog.workPeriod.startedAt.goe(criteria.getStartedAt()))
-        .and(worklog.workPeriod.finishedAt.lt(criteria.getFinishedAt()))
+    builder.and(worklog.createdAt.goe(criteria.getCreatedAtFrom()))
+        .and(worklog.createdAt.lt(criteria.getCreatedAtTo()))
         .and(worklog.deletedAt.isNull())
         .and(worklog.user.eq(user));
 

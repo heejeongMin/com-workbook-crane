@@ -34,11 +34,11 @@ public class Worklog {
   @JoinColumn(name = "equipment_id")
   private HeavyEquipment equipment;
 
-  @Column(name = "location")
+  @Column(name = "work_location")
   private String location;
 
-  @Embedded
-  private WorkPeriod workPeriod;
+  @Column(name = "work_time", columnDefinition = "SMALLINT")
+  private WorkTime workTime;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "partner_id")
@@ -59,7 +59,7 @@ public class Worklog {
     Worklog worklog = new Worklog();
     worklog.equipment = heavyEquipment;
     worklog.location = command.getLocation();
-    worklog.workPeriod = new WorkPeriod(command.getStartedAt(), command.getFinishedAt());
+    worklog.workTime = command.getWorkTime();
     worklog.partner = partner;
     worklog.user = user;
     worklog.createdAt = LocalDateTime.now();

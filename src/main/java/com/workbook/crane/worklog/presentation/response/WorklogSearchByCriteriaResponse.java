@@ -4,12 +4,9 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import com.workbook.crane.partner.presentation.controller.PartnerController;
-import com.workbook.crane.partner.presentation.response.PartnerSearchByPartnerNumberResponse;
 import com.workbook.crane.worklog.application.Dto.WorklogDto;
 import com.workbook.crane.worklog.application.model.info.WorklogSearchAllInfo;
 import com.workbook.crane.worklog.presentation.controller.WorklogController;
-import com.workbook.crane.worklog.presentation.request.WorklogSearchCriteriaRequest;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,16 +33,16 @@ public class WorklogSearchByCriteriaResponse extends
   }
 
   public void createLink(
-      LocalDateTime startedAt,
-      LocalDateTime finishedAt,
+      LocalDateTime createdAtFrom,
+      LocalDateTime createdAtTo,
       String partnerName,
       int page,
       int size,
       Principal principal)
       throws Exception {
     this.add(linkTo(methodOn(WorklogController.class)
-        .searchAllWorklog(
-            startedAt, finishedAt, partnerName, page, size, principal)).withSelfRel());
+        .searchAllWorklog(createdAtFrom, createdAtTo, partnerName, page, size, principal))
+        .withSelfRel());
 
     this.getWorklogDtos()
         .forEach(worklogDto -> {

@@ -8,7 +8,6 @@ import com.workbook.crane.worklog.application.model.command.WorklogCreateCommand
 import com.workbook.crane.worklog.application.model.criteria.WorklogSearchCriteria;
 import com.workbook.crane.worklog.presentation.request.WorklogCreateRequest;
 import com.workbook.crane.worklog.presentation.request.WorklogExcelReq;
-import com.workbook.crane.worklog.presentation.request.WorklogSearchCriteriaRequest;
 import com.workbook.crane.worklog.presentation.response.WorklogCreateResponse;
 import com.workbook.crane.worklog.presentation.response.WorklogSearchByCriteriaResponse;
 import com.workbook.crane.worklog.presentation.response.WorklogResponse;
@@ -53,10 +52,10 @@ public class WorklogController {
 
   @GetMapping(value = "/crane/v1/worklog", produces = {"application/hal+json"})
   public ResponseEntity<WorklogSearchByCriteriaResponse> searchAllWorklog(
-      @RequestParam(value = "startedAt")
-      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime startedAt,
-      @RequestParam(value = "finishedAt", required = false)
-      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime finishedAt,
+      @RequestParam(value = "createAtFrom")
+      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime createAtFrom,
+      @RequestParam(value = "createAtTo")
+      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime createAtTo,
       @RequestParam(value = "partnerName", required = false) String partnerName,
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "size", defaultValue = "8") int size,
@@ -66,9 +65,9 @@ public class WorklogController {
     WorklogSearchByCriteriaResponse response =
         WorklogSearchByCriteriaResponse.from(
             worklogService.searchAllWorklog(WorklogSearchCriteria.of(
-                startedAt, finishedAt, partnerName, page, size, principal.getName())));
+                createAtFrom, createAtTo, partnerName, page, size, principal.getName())));
 
-    response.createLink(startedAt, finishedAt, partnerName, page, size, principal);
+    response.createLink(createAtFrom, createAtTo, partnerName, page, size, principal);
 
     return ResponseEntity.ok(response);
   }
@@ -89,11 +88,11 @@ public class WorklogController {
         WorklogResponse.from(worklogService.deleteWorklog(id, principal.getName())));
   }
 
-  @PostMapping(value = "/crane/v1/worklog/email")
-  public ResponseEntity sendWorklogEmail(
-      @Valid @RequestBody WorklogExcelReq worklogExcelReq, Principal principal) throws Exception {
-    worklogService.sendWorklogEmail(WorklogExcelDto.from(worklogExcelReq, principal.getName()));
-
-    return ResponseEntity.ok(null);
-  }
+//  @PostMapping(value = "/crane/v1/worklog/email")
+//  public ResponseEntity sendWorklogEmail(
+//      @Valid @RequestBody WorklogExcelReq worklogExcelReq, Principal principal) throws Exception {
+//    worklogService.sendWorklogEmail(WorklogExcelDto.from(worklogExcelReq, principal.getName()));
+//
+//    return ResponseEntity.ok(null);
+//  }
 }

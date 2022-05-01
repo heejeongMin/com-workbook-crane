@@ -1,6 +1,7 @@
 package com.workbook.crane.worklog.application.model.info;
 
 import com.workbook.crane.partner.domain.model.Partner;
+import com.workbook.crane.worklog.domain.model.WorkTime;
 import com.workbook.crane.worklog.domain.model.Worklog;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -10,7 +11,8 @@ public class WorklogInfo {
   private Long id;
   private HeavyEquipmentInfo heavyEquipmentInfo;
   private String location;
-  private WorkPeriodInfo workPeriodInfo;
+
+  private WorkTime workTime;
   private PartnerInfo partnerInfo;
   private LocalDateTime createdAt;
   private LocalDateTime deletedAt;
@@ -20,7 +22,7 @@ public class WorklogInfo {
     info.id = worklog.getId();
     info.heavyEquipmentInfo = HeavyEquipmentInfo.from(worklog.getEquipment());
     info.location = worklog.getLocation();
-    info.workPeriodInfo = WorkPeriodInfo.from(worklog.getWorkPeriod());
+    info.workTime = worklog.getWorkTime();
     info.partnerInfo = PartnerInfo.from(worklog.getPartner());
     info.createdAt = worklog.getCreatedAt();
     info.deletedAt = worklog.getDeletedAt();

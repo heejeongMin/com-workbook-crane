@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class UserDetailInfo {
 
+  private Long id;
   private String username;
   private String password;
   private String fullname;
@@ -15,6 +16,7 @@ public class UserDetailInfo {
 
   public static UserDetailInfo from(User user) {
     UserDetailInfo info = new UserDetailInfo();
+    info.id = user.getId();
     info.username = user.getUsername();
     info.password = user.getPassword();
     info.fullname = user.getFullname();

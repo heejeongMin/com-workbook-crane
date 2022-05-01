@@ -19,10 +19,10 @@ public interface WorklogRepository extends
 
   @Query(
       "SELECT w FROM Worklog w "
-          + "WHERE w.workPeriod.startedAt >= :from AND w.workPeriod.finishedAt <= :to "
+          + "WHERE w.createdAt >= :from AND w.createdAt <= :to "
           + "AND w.user = :user "
           + "AND w.deletedAt IS NULL "
-          + "ORDER BY w.workPeriod.startedAt ASC ")
+          + "ORDER BY w.createdAt ASC ")
   List<Worklog> findWorklogInGivenPeriod(
       @Param(value = "from") LocalDateTime from,
       @Param(value = "to") LocalDateTime to,

@@ -1,5 +1,6 @@
 package com.workbook.crane.worklog.application.model.command;
 
+import com.workbook.crane.worklog.domain.model.WorkTime;
 import com.workbook.crane.worklog.presentation.request.WorklogCreateRequest;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -10,8 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WorklogCreateCommand {
 
-  private LocalDateTime startedAt;
-  private LocalDateTime finishedAt;
+  private WorkTime workTime;
   private Long equipmentId;
   private String location;
   private Long partnerId;
@@ -19,8 +19,7 @@ public class WorklogCreateCommand {
 
   public static WorklogCreateCommand of(WorklogCreateRequest request, String username) {
     WorklogCreateCommand command = new WorklogCreateCommand();
-    command.startedAt = request.getStartedAt();
-    command.finishedAt = request.getFinishedAt();
+    command.workTime = request.getWorkTime();
     command.equipmentId = request.getEquipmentId();
     command.location = request.getLocation();
     command.partnerId = request.getPartnerId();

@@ -10,10 +10,10 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 public class WorklogSearchCriteriaRequest {
   @NotNull
   @DateTimeFormat(iso = ISO.DATE_TIME)
-  private LocalDateTime startedAt;
+  private LocalDateTime from;
   @NotNull
   @DateTimeFormat(iso = ISO.DATE_TIME)
-  private LocalDateTime finishedAt;
+  private LocalDateTime to;
   private String partnerName;
   private int page;
   private int size;
