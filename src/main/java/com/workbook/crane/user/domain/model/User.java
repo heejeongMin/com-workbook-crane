@@ -71,4 +71,12 @@ public class User extends BaseEntity {
     user.role = command.getRole();
 		return user;
 	}
+
+  public void changeEmail(String email){
+    this.email = email;
+  }
+
+  public void changePassword(String password){
+    this.password = password;
+  }
 }

@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -99,7 +98,7 @@ public class WorklogService {
     if (StringUtils.isNotEmpty(criteria.getPartnerName())) {
       Optional<Partner> partnerOptional = partnerService.isExistingPartnerNameByUser(
           criteria.getPartnerName(), user.getId());
-      if(partnerOptional.isEmpty()) {
+      if (partnerOptional.isEmpty()) {
         return WorklogSearchAllInfo.getDefault();
       }
       partner = partnerOptional.get();
@@ -119,7 +118,7 @@ public class WorklogService {
   public WorklogInfo deleteWorklog(Long id, String username) throws Exception {
     User user = authService.getUserOrElseThrow(username);
     Worklog worklog = worklogRepository.findByIdAndUser(id, user);
-    if(worklog == null){
+    if (worklog == null) {
       throw new Exception("Worklog not found");
     }
 
@@ -131,12 +130,14 @@ public class WorklogService {
   public void sendWorklogEmail(WorklogExcelDto dto) throws Exception {
     log.info(System.getProperty("java.io.tmpdir"));
 
-    String filePath = System.getProperty("java.io.tmpdir") + "/worklog" + Instant.now().toEpochMilli() + ".xlsx";
+    //    String filePath = System.getProperty("java.io.tmpdir") + "/worklog" + Instant.now().toEpochMilli() + ".xlsx";
+    String filePath =
+        System.getProperty("java.io.tmpdir") + "/worklog" + Instant.now().toEpochMilli() + ".xlsx";
     extractWorklog(dto, filePath);
     sendEmail(dto.getEmail(), filePath);
   }
 
-  private void extractWorklog (WorklogExcelDto dto, String filePath) throws Exception{
+  private void extractWorklog(WorklogExcelDto dto, String filePath) throws Exception {
     User user = authService.getUserOrElseThrow(dto.getUsername());
     List<Worklog> worklogList =
         worklogRepository.findWorklogInGivenPeriod(dto.getFrom(), dto.getTo(), user);
@@ -225,7 +226,6 @@ public class WorklogService {
       xssfCell.setCellStyle(tableCellStyle);
       xssfCell.setCellValue("거래처");
 
-
       int seq = 1;
 
       for (Worklog worklog : worklogList) {
@@ -243,7 +243,8 @@ public class WorklogService {
         xssfCell.setCellStyle(tableCellStyle);
         xssfCell.setCellValue(worklog.getLocation());
 
-        HeavyEquipment heavyEquipment = heavyEquipmentRepository.getOne(worklog.getEquipment().getId());
+        HeavyEquipment heavyEquipment = heavyEquipmentRepository.getOne(
+            worklog.getEquipment().getId());
 
         xssfCell = xssfRow.createCell((short) 3);
         xssfCell.setCellStyle(tableCellStyle);
@@ -257,8 +258,6 @@ public class WorklogService {
         xssfCell.setCellStyle(tableCellStyle);
         xssfCell.setCellValue(worklog.getPartner().getCompanyName());
       }
-
-
 
       File file = new File(filePath);
       FileOutputStream fos = null;
