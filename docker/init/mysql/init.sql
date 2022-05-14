@@ -52,7 +52,9 @@ create TABLE IF NOT EXISTS heavy_equipment
      equipment_type varchar(10) NOT NULL DEFAULT '' COMMENT '장비명',
      equipment_unit varchar(10) NOT NULL DEFAULT '' COMMENT '장비 무게 단위',
      equipment_weight BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '장비 무게',
-     equipment_price_per_day double(11,2) DEFAULT 0 COMMENT '시간당 장비 가격',
+     half_day_amount double(11,2) DEFAULT 0 COMMENT '반일 장비 가격',
+     full_day_amount double(11,2) DEFAULT 0 COMMENT '하루 장비 가격',
+     night_shift_amount double(11,2) DEFAULT 0 COMMENT '야간 장비 가격',
      user_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '유저 아이디',
      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일자',
      deleted_at DATETIME COMMENT '삭제 일자'

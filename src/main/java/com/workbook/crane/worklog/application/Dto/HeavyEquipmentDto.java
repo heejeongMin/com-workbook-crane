@@ -1,5 +1,6 @@
 package com.workbook.crane.worklog.application.Dto;
 
+import com.workbook.crane.worklog.application.model.HeavyEquipmentPrice;
 import com.workbook.crane.worklog.application.model.info.HeavyEquipmentInfo;
 import com.workbook.crane.worklog.domain.model.EquipmentType;
 import com.workbook.crane.worklog.domain.model.EquipmentUnit;
@@ -13,7 +14,7 @@ public class HeavyEquipmentDto {
   private EquipmentType equipmentType;
   private EquipmentUnit equipmentUnit;
   private long equipmentWeight;
-  private Double equipmentPricePerDay;
+  private HeavyEquipmentPrice equipmentPrice;
   private Instant createdAt;
   private Instant deletedAt;
 
@@ -23,7 +24,7 @@ public class HeavyEquipmentDto {
     dto.equipmentType = info.getEquipmentType();
     dto.equipmentUnit = info.getEquipmentUnit();
     dto.equipmentWeight = info.getEquipmentWeight();
-    dto.equipmentPricePerDay = info.getEquipmentPricePerDay();
+    dto.equipmentPrice = info.getEquipmentPrice();
     dto.createdAt = info.getCreatedAt();
     dto.deletedAt = info.getDeletedAt();
     return dto;

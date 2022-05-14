@@ -32,11 +32,8 @@ public class HeavyEquipmentService {
   public HeavyEquipmentInfo createHeavyEquipment(HeavyEquipmentCreateCommand command)
       throws Exception {
     User user = authService.getUserOrElseThrow(command.getUsername());
-
-    HeavyEquipment heavyEquipment = HeavyEquipment.create(command, user);
-    heavyEquipment = heavyEquipmentRepository.save(heavyEquipment);
-
-    return HeavyEquipmentInfo.from(heavyEquipment);
+    return HeavyEquipmentInfo.from(
+        heavyEquipmentRepository.save(HeavyEquipment.create(command, user)));
   }
 
   @Transactional

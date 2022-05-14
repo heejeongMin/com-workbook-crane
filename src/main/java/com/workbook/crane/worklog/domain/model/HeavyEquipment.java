@@ -3,8 +3,8 @@ package com.workbook.crane.worklog.domain.model;
 import com.workbook.crane.user.domain.model.User;
 import com.workbook.crane.worklog.application.model.command.HeavyEquipmentCreateCommand;
 import java.time.Instant;
-import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -41,8 +41,8 @@ public class HeavyEquipment {
   @Column(name = "equipment_weight")
   private long equipmentWeight;
 
-  @Column(name = "equipment_price_per_day")
-  private Double equipmentPricePerDay;
+  @Embedded
+  private EquipmentPrice equipmentPrice;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User user;
@@ -62,7 +62,7 @@ public class HeavyEquipment {
     heavyEquipment.equipmentType = command.getEquipmentType();
     heavyEquipment.equipmentUnit = command.getEquipmentUnit();
     heavyEquipment.equipmentWeight = command.getEquipmentWeight();
-    heavyEquipment.equipmentPricePerDay = command.getEquipemntPricePerDay();
+    heavyEquipment.equipmentPrice = new EquipmentPrice(command.getEquipmentPrice());
     heavyEquipment.user = user;
     heavyEquipment.createdAt = Instant.now();
     return heavyEquipment;

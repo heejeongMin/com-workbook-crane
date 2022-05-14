@@ -2,6 +2,7 @@ package com.workbook.crane.worklog.application.model.info;
 
 import static java.util.stream.Collectors.toList;
 
+import com.workbook.crane.worklog.application.model.HeavyEquipmentPrice;
 import com.workbook.crane.worklog.domain.model.EquipmentType;
 import com.workbook.crane.worklog.domain.model.EquipmentUnit;
 import com.workbook.crane.worklog.domain.model.HeavyEquipment;
@@ -16,7 +17,7 @@ public class HeavyEquipmentInfo {
   private EquipmentType equipmentType;
   private EquipmentUnit equipmentUnit;
   private long equipmentWeight;
-  private Double equipmentPricePerDay;
+  private HeavyEquipmentPrice equipmentPrice;
   private Instant createdAt;
   private Instant deletedAt;
 
@@ -26,7 +27,7 @@ public class HeavyEquipmentInfo {
     info.equipmentType = heavyEquipment.getEquipmentType();
     info.equipmentUnit = heavyEquipment.getEquipmentUnit();
     info.equipmentWeight = heavyEquipment.getEquipmentWeight();
-    info.equipmentPricePerDay = heavyEquipment.getEquipmentPricePerDay();
+    info.equipmentPrice = new HeavyEquipmentPrice(heavyEquipment.getEquipmentPrice());
     info.createdAt = heavyEquipment.getCreatedAt();
     info.deletedAt = heavyEquipment.getDeletedAt();
     return info;
