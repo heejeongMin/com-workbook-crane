@@ -2,6 +2,7 @@ package com.workbook.crane.worklog.domain.repository;
 
 import com.workbook.crane.user.domain.model.User;
 import com.workbook.crane.worklog.domain.model.Worklog;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Sort;
@@ -19,13 +20,13 @@ public interface WorklogRepository extends
 
   @Query(
       "SELECT w FROM Worklog w "
-          + "WHERE w.createdAt >= :from AND w.createdAt <= :to "
+          + "WHERE w.workDate >= :from AND w.workDate <= :to "
           + "AND w.user = :user "
           + "AND w.deletedAt IS NULL "
-          + "ORDER BY w.createdAt ASC ")
+          + "ORDER BY w.workDate ASC ")
   List<Worklog> findWorklogInGivenPeriod(
-      @Param(value = "from") LocalDateTime from,
-      @Param(value = "to") LocalDateTime to,
+      @Param(value = "from") LocalDate from,
+      @Param(value = "to") LocalDate to,
       @Param(value = "user") User user);
 
   Worklog findByIdAndUser(Long id, User user);

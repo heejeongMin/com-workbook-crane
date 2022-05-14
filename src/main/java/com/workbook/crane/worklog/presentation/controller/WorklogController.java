@@ -52,10 +52,10 @@ public class WorklogController {
 
   @GetMapping(value = "/crane/v1/worklog", produces = {"application/hal+json"})
   public ResponseEntity<WorklogSearchByCriteriaResponse> searchAllWorklog(
-      @RequestParam(value = "createAtFrom")
-      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime createAtFrom,
-      @RequestParam(value = "createAtTo")
-      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime createAtTo,
+      @RequestParam(value = "workDateFrom")
+      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime workDateFrom,
+      @RequestParam(value = "workDateTo")
+      @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime workDateTo,
       @RequestParam(value = "partnerName", required = false) String partnerName,
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "size", defaultValue = "8") int size,
@@ -65,9 +65,9 @@ public class WorklogController {
     WorklogSearchByCriteriaResponse response =
         WorklogSearchByCriteriaResponse.from(
             worklogService.searchAllWorklog(WorklogSearchCriteria.of(
-                createAtFrom, createAtTo, partnerName, page, size, principal.getName())));
+                workDateFrom, workDateTo, partnerName, page, size, principal.getName())));
 
-    response.createLink(createAtFrom, createAtTo, partnerName, page, size, principal);
+    response.createLink(workDateFrom, workDateTo, partnerName, page, size, principal);
 
     return ResponseEntity.ok(response);
   }

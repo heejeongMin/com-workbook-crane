@@ -8,8 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum WorkTime {
-  MORNING("오전", 0.5),
-  AFTERNOON("오후", 0.5),
+  HALFDAY("반나절", 0.5),
   NIGHT("야간", -1),
   DAY("하루", 1);
 

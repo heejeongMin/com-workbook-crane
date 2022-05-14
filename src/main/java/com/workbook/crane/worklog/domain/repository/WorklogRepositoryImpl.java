@@ -27,8 +27,8 @@ public class WorklogRepositoryImpl
       WorklogSearchCriteria criteria, Partner partner, User user) {
 
     BooleanBuilder builder = new BooleanBuilder();
-    builder.and(worklog.createdAt.goe(criteria.getCreatedAtFrom()))
-        .and(worklog.createdAt.lt(criteria.getCreatedAtTo()))
+    builder.and(worklog.createdAt.goe(criteria.getWorkDateFrom()))
+        .and(worklog.createdAt.lt(criteria.getWorkDateTo()))
         .and(worklog.deletedAt.isNull())
         .and(worklog.user.eq(user));
 
@@ -41,6 +41,7 @@ public class WorklogRepositoryImpl
             .where(builder)
             .offset(criteria.getPageRequest().getOffset())
             .limit(criteria.getPageRequest().getPageSize())
+            .orderBy(worklog.workDate.desc())
             .fetchResults();
 
     return new PageImpl<>(result.getResults(), criteria.getPageRequest(), result.getTotal());

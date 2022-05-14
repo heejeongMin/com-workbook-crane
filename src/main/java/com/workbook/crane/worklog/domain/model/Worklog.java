@@ -3,6 +3,7 @@ package com.workbook.crane.worklog.domain.model;
 import com.workbook.crane.partner.domain.model.Partner;
 import com.workbook.crane.user.domain.model.User;
 import com.workbook.crane.worklog.application.model.command.WorklogCreateCommand;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -37,6 +38,8 @@ public class Worklog {
   @Column(name = "work_location")
   private String location;
 
+  @Column(name = "work_date")
+  private LocalDate workDate;
   @Column(name = "work_time", columnDefinition = "SMALLINT")
   private WorkTime workTime;
 
@@ -62,8 +65,9 @@ public class Worklog {
     Worklog worklog = new Worklog();
     worklog.equipment = heavyEquipment;
     worklog.location = command.getLocation();
+    worklog.workDate = command.getWorkDate();
     worklog.workTime = command.getWorkTime();
-    worklog.workPay = command.getWorkTime().calculate(command.getEquipmentPricePerDay());
+    worklog.workPay = command.getWorkPay();
     worklog.partner = partner;
     worklog.user = user;
     worklog.createdAt = LocalDateTime.now();

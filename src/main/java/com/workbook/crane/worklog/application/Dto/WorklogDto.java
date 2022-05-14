@@ -3,6 +3,7 @@ package com.workbook.crane.worklog.application.Dto;
 import com.workbook.crane.worklog.application.model.info.WorklogInfo;
 import com.workbook.crane.worklog.application.model.info.WorklogInfo.PartnerInfo;
 import com.workbook.crane.worklog.domain.model.WorkTime;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
@@ -12,8 +13,8 @@ public class WorklogDto {
   private Long id;
   private HeavyEquipmentDto heavyEquipmentDto;
   private String location;
+  private LocalDate workDate;
   private WorkTime workTime;
-
   private Double workPay;
   private PartnerDto partnerDto;
   private LocalDateTime createdAt;
@@ -24,6 +25,7 @@ public class WorklogDto {
     dto.id = info.getId();
     dto.heavyEquipmentDto = HeavyEquipmentDto.from(info.getHeavyEquipmentInfo());
     dto.location = info.getLocation();
+    dto.workDate = info.getWorkDate();
     dto.workTime = info.getWorkTime();
     dto.workPay = info.getWorkPay();
     dto.partnerDto = PartnerDto.from(info.getPartnerInfo());

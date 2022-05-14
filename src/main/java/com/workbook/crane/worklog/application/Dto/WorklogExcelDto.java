@@ -1,14 +1,15 @@
 package com.workbook.crane.worklog.application.Dto;
 
 import com.workbook.crane.worklog.presentation.request.WorklogExcelReq;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
 public class WorklogExcelDto {
 
-  private LocalDateTime from;
-  private LocalDateTime to;
+  private LocalDate from;
+  private LocalDate to;
   private String email;
   private String username;
 

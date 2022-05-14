@@ -38,11 +38,12 @@ create TABLE IF NOT EXISTS worklog
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'PK',
   equipment_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '장비 아이디',
   work_location VARCHAR(25) NOT NULL DEFAULT '' COMMENT '시/도',
+  work_date DATE NOT NULL DEFAULT (CURRENT_DATE) COMMENT '근무일자',
   work_time smallInt NOT NULL COMMENT '시작 일자 및 시간',
   work_pay double(11,2) DEFAULT 0 COMMENT '일당',
   partner_id BIGINT UNSIGNED NOT NULL default 0  COMMENT '거래처 아이디',
   user_id BIGINT UNSIGNED NOT NULL default 0 COMMENT '유저 아이디',
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '기록 생성 일자 및 시간',
+  created_at DATETIME NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT '기록 생성 일자 및 시간',
   deleted_at DATETIME COMMENT '기록 삭제 일자 및 시간'
 );
 

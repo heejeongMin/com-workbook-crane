@@ -208,21 +208,25 @@ public class WorklogService {
 
       xssfCell = xssfRow.createCell((short) 1);
       xssfCell.setCellStyle(tableCellStyle);
-      xssfCell.setCellValue("근무시간");
+      xssfCell.setCellValue("근무일자");
 
       xssfCell = xssfRow.createCell((short) 2);
       xssfCell.setCellStyle(tableCellStyle);
-      xssfCell.setCellValue("근무장소");
+      xssfCell.setCellValue("근무시간");
 
       xssfCell = xssfRow.createCell((short) 3);
       xssfCell.setCellStyle(tableCellStyle);
-      xssfCell.setCellValue("장비");
+      xssfCell.setCellValue("근무장소");
 
       xssfCell = xssfRow.createCell((short) 4);
       xssfCell.setCellStyle(tableCellStyle);
-      xssfCell.setCellValue("금액");
+      xssfCell.setCellValue("장비");
 
       xssfCell = xssfRow.createCell((short) 5);
+      xssfCell.setCellStyle(tableCellStyle);
+      xssfCell.setCellValue("금액");
+
+      xssfCell = xssfRow.createCell((short) 6);
       xssfCell.setCellStyle(tableCellStyle);
       xssfCell.setCellValue("거래처");
 
@@ -237,24 +241,28 @@ public class WorklogService {
 
         xssfCell = xssfRow.createCell((short) 1);
         xssfCell.setCellStyle(tableCellStyle);
-        xssfCell.setCellValue(worklog.getWorkTime().getDescription());
+        xssfCell.setCellValue(worklog.getWorkDate().toString());
 
         xssfCell = xssfRow.createCell((short) 2);
+        xssfCell.setCellStyle(tableCellStyle);
+        xssfCell.setCellValue(worklog.getWorkTime().getDescription());
+
+        xssfCell = xssfRow.createCell((short) 3);
         xssfCell.setCellStyle(tableCellStyle);
         xssfCell.setCellValue(worklog.getLocation());
 
         HeavyEquipment heavyEquipment = heavyEquipmentRepository.getOne(
             worklog.getEquipment().getId());
 
-        xssfCell = xssfRow.createCell((short) 3);
+        xssfCell = xssfRow.createCell((short) 4);
         xssfCell.setCellStyle(tableCellStyle);
         xssfCell.setCellValue(heavyEquipment.getEquipment());
 
-        xssfCell = xssfRow.createCell((short) 4);
+        xssfCell = xssfRow.createCell((short) 5);
         xssfCell.setCellStyle(tableCellStyle);
         xssfCell.setCellValue(workPayFormat.format(worklog.getWorkPay()));
 
-        xssfCell = xssfRow.createCell((short) 5);
+        xssfCell = xssfRow.createCell((short) 6);
         xssfCell.setCellStyle(tableCellStyle);
         xssfCell.setCellValue(worklog.getPartner().getCompanyName());
       }

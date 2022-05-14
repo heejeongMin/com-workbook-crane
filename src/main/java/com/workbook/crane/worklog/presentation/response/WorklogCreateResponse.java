@@ -8,6 +8,7 @@ import com.workbook.crane.worklog.domain.model.WorkTime;
 import com.workbook.crane.worklog.presentation.controller.WorklogController;
 import com.workbook.crane.worklog.presentation.request.WorklogCreateRequest;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,9 @@ public class WorklogCreateResponse extends RepresentationModel<WorklogCreateResp
   private Long id;
   private Long equipmentId;
   private String location;
+  private LocalDate workDate;
   private WorkTime workTime;
-
   private Double workPay;
-
   private Long partnerId;
   private LocalDateTime createdAt;
   private LocalDateTime deletedAt;
@@ -32,6 +32,7 @@ public class WorklogCreateResponse extends RepresentationModel<WorklogCreateResp
     response.id = info.getId();
     response.equipmentId = info.getEquipmentId();
     response.location = info.getLocation();
+    response.workDate = info.getWorkDate();
     response.workTime = info.getWorkTime();
     response.workPay = info.getWorkPay();
     response.partnerId = info.getPartnerId();
