@@ -92,7 +92,6 @@ public class WorklogController {
   public ResponseEntity sendWorklogEmail(
       @Valid @RequestBody WorklogExcelReq worklogExcelReq, Principal principal) throws Exception {
     worklogService.sendWorklogEmail(WorklogExcelDto.from(worklogExcelReq, principal.getName()));
-
     return ResponseEntity.ok(null);
   }
 }

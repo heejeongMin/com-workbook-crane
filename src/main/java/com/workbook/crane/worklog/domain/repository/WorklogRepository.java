@@ -30,4 +30,16 @@ public interface WorklogRepository extends
       @Param(value = "user") User user);
 
   Worklog findByIdAndUser(Long id, User user);
+
+  int countAllByUserAndDeletedAtIsNullAndWorkDateIsBetween(User user, LocalDate from, LocalDate to);
+
+  @Query(
+      "SELECT COALESCE(SUM(w.workPay), 0) FROM Worklog w "
+          + "WHERE w.workDate >= :from AND w.workDate <= :to "
+          + "AND w.user = :user "
+          + "AND w.deletedAt IS NULL ")
+  double sumWorkPayByUserAndDeletedAtIsNullAndWorkDateIsBetween(
+      @Param(value = "from") LocalDate from,
+      @Param(value = "to") LocalDate to,
+      @Param(value = "user") User user);
 }

@@ -6,12 +6,14 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import com.workbook.crane.user.application.model.command.SigninCommand;
 import com.workbook.crane.user.application.model.command.SignupCommand;
 import com.workbook.crane.user.application.service.AuthService;
+import com.workbook.crane.user.application.service.UserWorkInfoService;
 import com.workbook.crane.user.presenation.model.request.ChangeEmailRequest;
 import com.workbook.crane.user.presenation.model.request.ChangePasswordRequest;
 import com.workbook.crane.user.presenation.model.request.SigninRequest;
 import com.workbook.crane.user.presenation.model.request.SignupRequest;
 import com.workbook.crane.user.presenation.model.response.SigninResponse;
 import com.workbook.crane.user.presenation.model.response.UserDetailResponse;
+import com.workbook.crane.user.presenation.model.response.UserWorkInfoResponse;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
   private final AuthService authService;
+  private final UserWorkInfoService userWorkInfoService;
 
   @PostMapping(value = "/signup", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<Boolean> signup(@RequestBody SignupRequest signupRequest) throws Exception {
@@ -64,6 +67,13 @@ public class AuthController {
       Principal principal,
       @RequestBody ChangePasswordRequest req) throws Exception {
     return ResponseEntity.ok(
-        UserDetailResponse.from(authService.changePassword(principal.getName(), req.getPassword())));
+        UserDetailResponse.from(
+            authService.changePassword(principal.getName(), req.getPassword())));
+  }
+
+  @GetMapping(value = "/workInfo", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<UserWorkInfoResponse> getAssessment(Principal principal) throws Exception {
+    return ResponseEntity.ok(
+        UserWorkInfoResponse.of(userWorkInfoService.getUserWorkInfo(principal.getName())));
   }
 }

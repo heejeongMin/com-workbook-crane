@@ -12,4 +12,6 @@ public interface HeavyEquipmentRepository extends JpaRepository<HeavyEquipment, 
   List<HeavyEquipment> findByUserAndDeletedAtIsNull(User user);
 
   HeavyEquipment findByIdEqualsAndUserAndDeletedAtIsNull(Long id, User user);
+
+  int countAllByUserAndDeletedAtIsNull(User user);
 }

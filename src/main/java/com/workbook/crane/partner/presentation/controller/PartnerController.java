@@ -39,11 +39,6 @@ public class PartnerController {
       @RequestParam(value = "page", defaultValue = "1") int page,
       @RequestParam(value = "size", defaultValue = "10") int size,
       Principal principal) throws Exception {
-
-    log.info("page " + page);
-    log.info("size " + size);
-    log.info("name " + principal.getName());
-
     User user = authService.getUserOrElseThrow(principal.getName());
     PartnerSearchByCriteriaRes response =
         PartnerSearchByCriteriaRes.from(
@@ -64,8 +59,9 @@ public class PartnerController {
         );
 
     response.getPartners().forEach(p -> {
-            log.info("partnernumber " +p.getPartnerNumber());
-            log.info("companyName" + p.getCompanyName());});
+      log.info("partnernumber " + p.getPartnerNumber());
+      log.info("companyName" + p.getCompanyName());
+    });
 
     return ResponseEntity.ok(response);
   }

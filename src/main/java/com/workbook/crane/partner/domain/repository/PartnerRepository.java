@@ -25,4 +25,6 @@ public interface PartnerRepository extends JpaRepository<Partner, Long> {
   Partner findByPartnerNumberAndCreatedByAndDeletedAtIsNull(String partnerNumber, Long createdBy);
 
   Partner findByIdAndDeletedAtIsNull(Long id);
+
+  int countAllByCreatedByAndDeletedAtIsNull(Long id);
 }
