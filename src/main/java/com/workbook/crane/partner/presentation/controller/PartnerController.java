@@ -13,6 +13,7 @@ import com.workbook.crane.user.domain.model.User;
 import java.security.Principal;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -101,11 +102,10 @@ public class PartnerController {
 //            partnerService.updatePartner(PartnerDto.of(partnerId, partnerReq)))));
 //  }
 
-//  @DeleteMapping(value = "/crane/v1/partner/{partnerId}")
-//  public ResponseEntity<PartnerRes> deletePartner(
-//      @PathVariable(value = "partnerId") Long partnerId) throws Exception {
-//    return ResponseEntity.ok(
-//        PartnerRes.from(Arrays.asList(partnerService.deletePartner(partnerId))));
-//  }
-
+  @DeleteMapping(value = "/crane/v1/partner/{partnerId}")
+  public ResponseEntity deletePartner(
+      @PathVariable(value = "partnerId") Long partnerId) throws Exception {
+    partnerService.deletePartner(partnerId);
+    return ResponseEntity.ok(null);
+  }
 }
